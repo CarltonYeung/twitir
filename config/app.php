@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'twitir'),
+
+    'name' => 'twitir', // access via config('app.name') or {{ config('app.name') }} in blade
 
     /*
     |--------------------------------------------------------------------------
@@ -65,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/New_York',
 
     /*
     |--------------------------------------------------------------------------
