@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Mail;
+use App\Mail\AddUserVerification;
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
@@ -69,13 +72,21 @@ class UsersController extends Controller
         	]);
         }
 
+        /**
+         * Add user record to database.
+         */
         $user = new User;
         $user->username = $data['username'];
-        $user->password = $data['password'];
+        $user->password = Hash::make($data['password']);
         $user->email = $data['email'];
         $user->verification_key = md5(uniqid(rand(), true));
         $user->verified = false;
         $user->save();
+
+        /**
+         * Send verification email.
+         */
+        Mail::to($user->email)->send(new AddUserVerification($user));
 
         return response()->json(['status' => config('status.ok')]);
     }
