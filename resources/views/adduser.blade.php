@@ -3,7 +3,7 @@
 @section('content')
 <form id='adduser' method='POST'>
     @csrf
-    <input type='text' name='username' placeholder='Name'>
+    <input type='text' name='username' placeholder='Userame'>
     <input type='password' name='password' placeholder='Password'>
     <input type='email' name='email' placeholder='Email'>
     <input type='submit' value='/adduser'>

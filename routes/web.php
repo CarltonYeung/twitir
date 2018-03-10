@@ -11,10 +11,12 @@
 |
 */
 
+// Homepage
 Route::get('/', 'HomepageController@index');
 
-Route::post('/adduser', 'AddUserController@adduser');
+// adduser
+Route::get('/adduser', 'UsersController@index')->name('adduser');
+Route::post('/adduser', 'UsersController@adduser');
 
 // Placeholder routes
 Route::get('/login', 'HomepageController@index')->name('login');
-Route::get('/adduser', 'AddUserController@index')->name('adduser');
