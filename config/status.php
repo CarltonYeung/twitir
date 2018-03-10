@@ -30,6 +30,10 @@ return [
 
     'invalid_input' => 'Invalid input: ',
 
+    'no_match' => 'No match found: ',
+
+    'already_verified' => 'This email has already been verified.'
+
 ];
 
 ?>

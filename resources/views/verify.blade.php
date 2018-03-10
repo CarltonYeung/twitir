@@ -3,8 +3,8 @@
 @section('content')
 <form id='verify' method='POST'>
     @csrf
-    <input type='email' name='email' placeholder='email'>
-    <input type='text' name='key' placeholder='key'>
+    <input type='email' name='email' placeholder='email' value='{{ $email }}'>
+    <input type='text' name='key' placeholder='key' value='{{ $key }}'>
     <input type='submit' value='/verify'>
 </form>
 @endsection

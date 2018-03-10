@@ -20,6 +20,7 @@ Route::post('/adduser', 'UsersController@adduser');
 
 // verify
 Route::get('/verify', 'EmailVerificationController@index')->name('verify');
+Route::post('/verify', 'EmailVerificationController@verify');
 
 // Placeholder routes
 Route::get('/login', 'HomepageController@index')->name('login');
