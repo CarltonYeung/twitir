@@ -7,24 +7,22 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Requests;
+use App\User;
 
 class AddUserVerification extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $data;
+    private $user;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct(User $user)
     {
-        $this->data = [
-            'username' => $user->username,
-            'verify_link' => request()->getHttpHost().'/verify?email='.$user->email.'?key&='.$user->verification_key
-        ];
+        $this->user = $user;
     }
 
     /**
@@ -34,6 +32,9 @@ class AddUserVerification extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.user.adduserverification')->with('data', $this->data);
+        return $this->markdown('emails.user.adduserverification')->with([
+            'username' => $this->user->username,
+            'verify_link' => request()->getHttpHost().'/verify?email='.$this->user->email.'?key&='.$this->user->verification_key
+        ]);
     }
 }

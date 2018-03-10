@@ -1,9 +1,9 @@
 @component('mail::message')
-# sup {{ $data['username'] }},
+# sup {{ $username }},
 
 **welcome to twitir!** please click the button below to verify your email
 
-@component('mail::button', ['url' => $data['verify_link']])
+@component('mail::button', ['url' => $verify_link])
 verify email
 @endcomponent
 
