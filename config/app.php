@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Requests;
+
 return [
 
     /*
@@ -54,7 +56,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => request()->getHttpHost(),
 
     /*
     |--------------------------------------------------------------------------
