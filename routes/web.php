@@ -18,5 +18,8 @@ Route::get('/', 'HomepageController@index');
 Route::get('/adduser', 'UsersController@index')->name('adduser');
 Route::post('/adduser', 'UsersController@adduser');
 
+// verify
+Route::get('/verify', 'EmailVerificationController@index')->name('verify');
+
 // Placeholder routes
 Route::get('/login', 'HomepageController@index')->name('login');

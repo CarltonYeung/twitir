@@ -1,12 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-<form id='adduser' method='POST'>
+<form id='verify' method='POST'>
     @csrf
-    <input type='text' name='username' placeholder='username'>
-    <input type='password' name='password' placeholder='password'>
     <input type='email' name='email' placeholder='email'>
-    <input type='submit' value='/adduser'>
+    <input type='text' name='key' placeholder='key'>
+    <input type='submit' value='/verify'>
 </form>
 @endsection
 
@@ -19,9 +18,9 @@
 <script>
 
     /**
-     * Handler for /adduser form submission
+     * Handler for /verify form submission
      */
-    $('#adduser').submit(function() {
+    $('#verify').submit(function() {
         // Get the form data
         var dataArray = $(this).serializeArray();
 
@@ -35,7 +34,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/adduser',
+            url: '/verify',
             data: JSON.stringify(dataObj),
             contentType: 'application/json',
             dataType: 'json',
@@ -44,10 +43,9 @@
                 console.log(JSON.stringify(data));
 
                 if (data.status === 'OK') {
-                    // Clear the fields of the adduser form
-                    $('#adduser input[name=username]').val('');
-                    $('#adduser input[name=password]').val('');
-                    $('#adduser input[name=email]').val('');
+                    // Clear the fields of the verify form
+                    $('#verify input[name=email]').val('');
+                    $('#verify input[name=key]').val('');
                 }
 
             },

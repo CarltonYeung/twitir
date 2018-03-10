@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Requests;
-
 return [
 
     /*
@@ -56,7 +54,7 @@ return [
     |
     */
 
-    'url' => request()->getHttpHost(),
+    'url' => 'cayeung.cse356.compas.cs.stonybrook.edu',
 
     /*
     |--------------------------------------------------------------------------
