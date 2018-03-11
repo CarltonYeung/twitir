@@ -26,16 +26,16 @@ class UsersController extends Controller
     {
         $data = $request->json()->all();
 
-        $keys = ['username', 'password', 'email'];
+        $expected_parameters = ['username', 'password', 'email'];
 
         /**
          * Return error if request was not well-formed.
          */
-        foreach ($keys as $key) {
-        	if (!array_key_exists($key, $data)) {
+        foreach ($expected_parameters as $p) {
+        	if (!array_key_exists($p, $data)) {
         		return response()->json([
         			'status' => config('status.error'),
-        			'error' => config('status.missing_input').$key
+        			'error' => config('status.missing').$p
         		]);
         	}
         }
@@ -43,11 +43,11 @@ class UsersController extends Controller
         /**
          * Return error if request contains invalid values.
          */
-        foreach ($keys as $key) {
-        	if (!is_string($data[$key]) || strlen($data[$key]) < 1) {
+        foreach ($expected_parameters as $p) {
+        	if (!is_string($data[$p]) || strlen($data[$p]) < 1) {
         		return response()->json([
         			'status' => config('status.error'),
-        			'error' => config('status.invalid_input').$key
+        			'error' => config('status.invalid').$p
         		]);
         	}
         }
@@ -58,7 +58,7 @@ class UsersController extends Controller
         if (User::where('username', $data['username'])->first()) {
         	return response()->json([
         		'status' => config('status.error'),
-        		'error' => config('status.username_unavailable')
+        		'error' => config('status.unavailable').'username'
         	]);
         }
         
@@ -68,7 +68,7 @@ class UsersController extends Controller
         if (User::where('email', $data['email'])->first()) {
         	return response()->json([
         		'status' => config('status.error'),
-        		'error' => config('status.email_unavailable')
+        		'error' => config('status.unavailable').'email'
         	]);
         }
 

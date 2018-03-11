@@ -1,13 +1,39 @@
 @extends('layouts.app')
 
 @section('content')
-<form id='adduser' method='POST'>
-    @csrf
-    <input type='text' name='username' placeholder='username'>
-    <input type='password' name='password' placeholder='password'>
-    <input type='email' name='email' placeholder='email'>
-    <input type='submit' value='/adduser'>
-</form>
+<div class='container'>
+    <div class='row justify-content-center align-middle'>
+        <div class='col-md-6'>
+            <div class='card border-secondary'>
+                <div class='card-body'>
+                    <h2 class="card-title">/adduser</h2>
+
+                    <form id='adduser' method='POST'>
+                        @csrf
+
+                        <div class='form-group'>
+                            <label for='username'>username</label>
+                            <input type='text' name='username' id='username' class='form-control' required>
+                        </div>
+
+                        <div class='form-group'>
+                            <label for='password'>password</label>
+                            <input type='password' name='password' id='password' class='form-control'  required>
+                        </div>
+
+                        <div class='form-group'>
+                            <label for='email'>email</label>
+                            <input type='email' name='email' id='email' class='form-control'  required>
+                        </div>
+
+                        <br />
+                        <button class='btn btn-secondary'>/adduser</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('style')
@@ -48,6 +74,10 @@
                     $('#adduser input[name=username]').val('');
                     $('#adduser input[name=password]').val('');
                     $('#adduser input[name=email]').val('');
+
+                    $('.card').removeClass('border-secondary border-danger').addClass('border-success');
+                } else {
+                    $('.card').removeClass('border-success border-secondary').addClass('border-danger');
                 }
 
             },

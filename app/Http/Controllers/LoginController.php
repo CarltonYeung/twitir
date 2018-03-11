@@ -5,31 +5,26 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class EmailVerificationController extends Controller
+class LoginController extends Controller
 {
     /**
      * Handle GET request.
      */
     public function index(Request $request)
     {
-    	/**
-    	 * Automatically fill in the form with the query parameters if they are provided.
-    	 */
-        return view('verify')->with([
-        	'email' => $request->query('email', ''),
-        	'key' => $request->query('key', '')
-        ]);
+        return view('login');
     }
 
     /**
      * Handle POST request.
      */
-    public function verify(Request $request)
+    public function login(Request $request)
     {
     	$data = $request->json()->all();
 
-    	$expected_parameters = ['email', 'key'];
+    	$expected_parameters = ['username', 'password'];
 
         /**
          * Return error if request was not well-formed.
@@ -58,40 +53,41 @@ class EmailVerificationController extends Controller
         /**
          * Get the user from the database.
          */
-        $user = User::where('email', $data['email'])->first();
+        $user = User::where('username', $data['username'])->first();
 
         /**
-         * Return error if the email does not belong to any registered user.
+         * Return error if the username is not registered.
          */
         if (!$user) {
         	return response()->json([
         		'status' => config('status.error'),
-        		'error' => config('status.invalid').'email'
+        		'error' => config('status.invalid').'username'
         	]);
         }
 
         /**
-         * Return error if the email has already been verified.
+         * Return error if the user's email is not verified.
          */
-        if ($user->verified == true) {
+        if (!$user->verified) {
+            return response()->json([
+                'status' => config('status.error'),
+                'error' => config('status.email_not_verified')
+            ]);
+        }
+
+        /**
+         * Return error if the password is incorrect.
+         */
+        if (!Hash::check($data['password'], $user->password)) {
         	return response()->json([
         		'status' => config('status.error'),
-        		'error' => config('status.email_already_verified')
+        		'error' => config('status.invalid').'password'
         	]);
         }
 
         /**
-         * Return error if the verification key does not match.
+         * Login
          */
-        if ($data['key'] !== $user->verification_key) {
-        	return response()->json([
-        		'status' => config('status.error'),
-        		'error' => config('status.invalid').'key'
-        	]);
-        }
-
-        $user->verified = true;
-        $user->save();
 
         return response()->json(['status' => config('status.ok')]);
     }

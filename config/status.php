@@ -22,17 +22,15 @@ return [
     */
     'error' => 'error',
 
-    'username_unavailable' => 'This username is already in use.',
+    'unavailable' => 'The following parameter already exists: ',
 
-    'email_unavailable' => 'This email is already in use.',
+    'missing' => 'The following paramter was missing from the request: ',
 
-    'missing_input' => 'Missing input: ',
+    'invalid' => 'The following parameter is invalid: ',
 
-    'invalid_input' => 'Invalid input: ',
+    'email_already_verified' => 'This email has already been verified.',
 
-    'no_match' => 'No match found: ',
-
-    'already_verified' => 'This email has already been verified.'
+    'email_not_verified' => 'The email associated with this user has not been verified.',
 
 ];
 
