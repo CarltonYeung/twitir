@@ -6,6 +6,7 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -51,45 +52,23 @@ class LoginController extends Controller
         }
 
         /**
-         * Get the user from the database.
+         * Handle an authentication attempt.
+         *
+         * @return Response
          */
-        $user = User::where('username', $data['username'])->first();
-
-        /**
-         * Return error if the username is not registered.
-         */
-        if (!$user) {
-        	return response()->json([
-        		'status' => config('status.error'),
-        		'error' => config('status.invalid').'username'
-        	]);
-        }
-
-        /**
-         * Return error if the user's email is not verified.
-         */
-        if (!$user->verified) {
+        $query = [
+            'username' => $data['username'], 
+            'password' => $data['password'], 
+            'verified' => true];
+        $remember = true;
+        if (Auth::attempt($query, $remember)) {
+            return response()->json(['status' => config('status.ok')]);
+        } else {
             return response()->json([
                 'status' => config('status.error'),
-                'error' => config('status.email_not_verified')
+                'error' => config('status.bad_login')
             ]);
         }
-
-        /**
-         * Return error if the password is incorrect.
-         */
-        if (!Hash::check($data['password'], $user->password)) {
-        	return response()->json([
-        		'status' => config('status.error'),
-        		'error' => config('status.invalid').'password'
-        	]);
-        }
-
-        /**
-         * Login
-         */
-
-        return response()->json(['status' => config('status.ok')]);
     }
 }
 

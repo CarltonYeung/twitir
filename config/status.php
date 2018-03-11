@@ -32,6 +32,10 @@ return [
 
     'email_not_verified' => 'The email associated with this user has not been verified.',
 
+    'bad_login' => 'Bad login attempt.',
+
+    'unauthorized' => 'Action prohibited. Please log in.',
+
 ];
 
 ?>

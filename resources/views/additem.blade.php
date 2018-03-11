@@ -6,28 +6,29 @@
         <div class='col-md-6'>
             <div class='card border-secondary'>
                 <div class='card-body'>
-                    <h2 class="card-title">/adduser</h2>
+                    <h2 class="card-title">/additem</h2>
 
-                    <form id='adduser' method='POST'>
+                    <form id='additem' method='POST'>
                         @csrf
 
                         <div class='form-group'>
-                            <label for='username'>username</label>
-                            <input type='text' name='username' id='username' class='form-control' required>
+                            <label for='content'>content</label>
+                            <textarea type='text' class='form-control' id='content' rows='3' required></textarea>
+                            <small class="form-text text-muted">message body of tweet</small>
                         </div>
 
                         <div class='form-group'>
-                            <label for='password'>password</label>
-                            <input type='password' name='password' id='password' class='form-control'  required>
-                        </div>
-
-                        <div class='form-group'>
-                            <label for='email'>email</label>
-                            <input type='email' name='email' id='email' class='form-control'  required>
+                            <label for='child-type'>child type</label>
+                            <select class='form-control' id='child-type'>
+                                <option value='null'>null</option>
+                                <option value='retweet'>retweet</option>
+                                <option value='reply'>reply</option>
+                            </select>
+                            <small class="form-text text-muted">string ("retweet" or "reply"), null if this is not a child tweet</small>
                         </div>
 
                         <br />
-                        <button class='btn btn-secondary'>/adduser</button>
+                        <button class='btn btn-secondary'>/additem</button>
                     </form>
                 </div>
             </div>
@@ -45,9 +46,9 @@
 <script>
 
     /**
-     * Handler for /adduser form submission
+     * Handler for /additem form submission
      */
-    $('#adduser').submit(function() {
+    $('#additem').submit(function() {
         // Get the form data
         var dataArray = $(this).serializeArray();
 
@@ -57,11 +58,17 @@
             dataObj[dataArray[i].name] = dataArray[i].value;
         }
 
+        dataObj['content'] = $('#content').val();
+        dataObj['childType'] = $('#child-type').find('option:selected').val();
+        if (dataObj['childType'] === 'null') {
+            dataObj['childType'] = null;
+        }
+
         console.log(JSON.stringify(dataObj));
 
         $.ajax({
             type: 'POST',
-            url: '/adduser',
+            url: '/additem',
             data: JSON.stringify(dataObj),
             contentType: 'application/json',
             dataType: 'json',
@@ -70,10 +77,8 @@
                 console.log(JSON.stringify(data));
 
                 if (data.status === 'OK') {
-                    // Clear the fields of the adduser form
-                    $('#adduser input[name=username]').val('');
-                    $('#adduser input[name=password]').val('');
-                    $('#adduser input[name=email]').val('');
+                    // Clear the fields of the additem form
+                    $('#content').val('');
 
                     $('.card').removeClass('border-secondary border-danger').addClass('border-success');
                 } else {

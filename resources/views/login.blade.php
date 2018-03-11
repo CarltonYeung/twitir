@@ -6,24 +6,28 @@
         <div class='col-md-6'>
             <div class='card border-secondary'>
                 <div class='card-body'>
-                    <h2 class="card-title">/login</h2>
+                    @guest
+                        <h2 class="card-title">/login</h2>
 
-                    <form id='login' method='POST'>
-                        @csrf
+                        <form id='login' method='POST'>
+                            @csrf
 
-                        <div class='form-group'>
-                            <label for='username'>username</label>
-                            <input type='text' name='username' id='username' class='form-control' required>
-                        </div>
+                            <div class='form-group'>
+                                <label for='username'>username</label>
+                                <input type='text' name='username' id='username' class='form-control' required>
+                            </div>
 
-                        <div class='form-group'>
-                            <label for='password'>password</label>
-                            <input type='password' name='password' id='password' class='form-control' required>
-                        </div>
+                            <div class='form-group'>
+                                <label for='password'>password</label>
+                                <input type='password' name='password' id='password' class='form-control' required>
+                            </div>
 
-                        <br />
-                        <button class='btn btn-secondary'>/login</button>
-                    </form>
+                            <br />
+                            <button class='btn btn-secondary'>/login</button>
+                        </form>
+                    @else
+                        you're awesome! thanks for logging in!
+                    @endguest
                 </div>
             </div>
         </div>
@@ -52,7 +56,7 @@
             dataObj[dataArray[i].name] = dataArray[i].value;
         }
 
-        // console.log(JSON.stringify(dataObj));
+        console.log(JSON.stringify(dataObj));
 
         $.ajax({
             type: 'POST',
@@ -66,10 +70,11 @@
 
                 if (data.status === 'OK') {
                     // Clear the fields of the verify form
-                    $('#login input[name=email]').val('');
-                    $('#login input[name=key]').val('');
+                    $('#username').val('');
+                    $('#password').val('');
 
                     $('.card').removeClass('border-secondary border-danger').addClass('border-success');
+                    location.reload(true);
                 } else {
                     $('.card').removeClass('border-success border-secondary').addClass('border-danger');
                 }

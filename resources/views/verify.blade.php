@@ -52,7 +52,7 @@
             dataObj[dataArray[i].name] = dataArray[i].value;
         }
 
-        // console.log(JSON.stringify(dataObj));
+        console.log(JSON.stringify(dataObj));
 
         $.ajax({
             type: 'POST',

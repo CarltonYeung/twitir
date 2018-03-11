@@ -12,7 +12,7 @@
 */
 
 // Homepage
-Route::get('/', 'HomepageController@index');
+Route::get('/', 'HomepageController@index')->name('home');
 
 // adduser
 Route::get('/adduser', 'UsersController@index')->name('adduser');
@@ -25,3 +25,10 @@ Route::post('/verify', 'EmailVerificationController@verify');
 // login
 Route::get('/login', 'LoginController@index')->name('login');
 Route::post('/login', 'LoginController@login');
+
+// logout
+Route::post('/logout', 'LogoutController@logout')->name('logout');
+
+// tweets/items/posts
+Route::get('/additem', 'ItemsController@index')->name('additem');
+Route::post('/additem', 'ItemsController@additem');
