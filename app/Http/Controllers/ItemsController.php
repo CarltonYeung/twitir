@@ -15,7 +15,7 @@ class ItemsController extends Controller
     public function index(Request $request)
     {
         if (!Auth::check()) {
-            return view('login');
+            return redirect('login');
         }
 
         return view('additem');

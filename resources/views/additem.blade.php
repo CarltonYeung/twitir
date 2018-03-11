@@ -64,7 +64,7 @@
             dataObj['childType'] = null;
         }
 
-        console.log(JSON.stringify(dataObj));
+        console.log(JSON.stringify(dataObj, null, 4));
 
         $.ajax({
             type: 'POST',
@@ -74,7 +74,7 @@
             dataType: 'json',
             success: function(data) {
 
-                console.log(JSON.stringify(data));
+                console.log(JSON.stringify(data, null, 4));
 
                 if (data.status === 'OK') {
                     // Clear the fields of the additem form
