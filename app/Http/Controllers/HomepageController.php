@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 class HomepageController extends Controller
 {
     /**
-     * Show the homepage view.
+     * Handle GET request.
      */
     public function index()
     {

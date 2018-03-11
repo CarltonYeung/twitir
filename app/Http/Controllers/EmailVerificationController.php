@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Validator;
 
 class EmailVerificationController extends Controller
 {
@@ -13,9 +14,6 @@ class EmailVerificationController extends Controller
      */
     public function index(Request $request)
     {
-    	/**
-    	 * Automatically fill in the form with the query parameters if they are provided.
-    	 */
         return view('verify')->with([
         	'email' => $request->query('email', ''),
         	'key' => $request->query('key', '')
@@ -29,65 +27,29 @@ class EmailVerificationController extends Controller
     {
     	$data = $request->json()->all();
 
-    	$expected_parameters = ['email', 'key'];
+    	$validator = Validator::make($data, [
+            'email' => 'required|string|email|max:255|exists:users',
+            'key' => 'required|string|max:255',
+        ]);
 
-        /**
-         * Return error if request was not well-formed.
-         */
-        foreach ($expected_parameters as $p) {
-        	if (!array_key_exists($p, $data)) {
-        		return response()->json([
-        			'status' => config('status.error'),
-        			'error' => config('status.missing').$p
-        		]);
-        	}
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => config('status.error'),
+                'error' => $validator->errors()
+            ]);
         }
 
-        /**
-         * Return error if request contains invalid values.
-         */
-        foreach ($expected_parameters as $p) {
-        	if (!is_string($data[$p]) || strlen($data[$p]) < 1) {
-        		return response()->json([
-        			'status' => config('status.error'),
-        			'error' => config('status.invalid').$p
-        		]);
-        	}
-        }
+        $user = User::where([
+            'email' => $data['email'],
+            'verification_key' => $data['key'],
+            'verified' => false,
+        ])->first();
 
-        /**
-         * Get the user from the database.
-         */
-        $user = User::where('email', $data['email'])->first();
-
-        /**
-         * Return error if the email does not belong to any registered user.
-         */
         if (!$user) {
-        	return response()->json([
-        		'status' => config('status.error'),
-        		'error' => config('status.invalid').'email'
-        	]);
-        }
-
-        /**
-         * Return error if the email has already been verified.
-         */
-        if ($user->verified == true) {
-        	return response()->json([
-        		'status' => config('status.error'),
-        		'error' => config('status.email_already_verified')
-        	]);
-        }
-
-        /**
-         * Return error if the verification key does not match.
-         */
-        if ($data['key'] !== $user->verification_key) {
-        	return response()->json([
-        		'status' => config('status.error'),
-        		'error' => config('status.invalid').'key'
-        	]);
+            return response()->json([
+                'status' => config('status.error'),
+                'error' => config('status.verification_failed'),
+            ]);
         }
 
         $user->verified = true;

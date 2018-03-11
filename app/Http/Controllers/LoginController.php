@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class LoginController extends Controller
 {
@@ -25,50 +25,33 @@ class LoginController extends Controller
     {
     	$data = $request->json()->all();
 
-    	$expected_parameters = ['username', 'password'];
+        $validator = Validator::make($data, [
+            'username' => 'required|string|max:255|exists:users',
+            'password' => 'required|string',
+        ]);
 
-        /**
-         * Return error if request was not well-formed.
-         */
-        foreach ($expected_parameters as $p) {
-        	if (!array_key_exists($p, $data)) {
-        		return response()->json([
-        			'status' => config('status.error'),
-        			'error' => config('status.missing').$p
-        		]);
-        	}
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => config('status.error'),
+                'error' => $validator->errors()
+            ]);
         }
 
-        /**
-         * Return error if request contains invalid values.
-         */
-        foreach ($expected_parameters as $p) {
-        	if (!is_string($data[$p]) || strlen($data[$p]) < 1) {
-        		return response()->json([
-        			'status' => config('status.error'),
-        			'error' => config('status.invalid').$p
-        		]);
-        	}
-        }
-
-        /**
-         * Handle an authentication attempt.
-         *
-         * @return Response
-         */
         $query = [
             'username' => $data['username'], 
             'password' => $data['password'], 
             'verified' => true];
+
         $remember = true;
-        if (Auth::attempt($query, $remember)) {
-            return response()->json(['status' => config('status.ok')]);
-        } else {
+
+        if (!Auth::attempt($query, $remember)) {
             return response()->json([
                 'status' => config('status.error'),
-                'error' => config('status.bad_login')
+                'error' => config('status.login_failed')
             ]);
         }
+
+        return response()->json(['status' => config('status.ok')]);
     }
 }
 
