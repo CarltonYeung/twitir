@@ -32,3 +32,4 @@ Route::post('/logout', 'LogoutController@logout')->name('logout');
 // tweets/items/posts
 Route::get('/additem', 'ItemsController@index')->name('additem');
 Route::post('/additem', 'ItemsController@additem');
+Route::get('item/{id}', 'ItemsController@getitem')->name('getitem');

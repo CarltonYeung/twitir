@@ -13,7 +13,7 @@ class LogoutController extends Controller
     public function logout()
     {
         Auth::logout();
-        return response()->json(['status' => config('status.ok')]);
+        return response()->prettyjson(['status' => config('status.ok')]);
     }
 }
 

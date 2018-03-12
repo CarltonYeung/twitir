@@ -62,7 +62,7 @@
             dataType: 'json',
             success: function(data) {
 
-                console.log(JSON.stringify(data. null, 4));
+                console.log(JSON.stringify(data, null, 4));
 
                 if (data.status === 'OK') {
                     // Clear the fields of the verify form

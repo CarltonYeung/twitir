@@ -31,27 +31,28 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
+            return response()->prettyjson([
                 'status' => config('status.error'),
-                'error' => $validator->errors()
+                'error' => $validator->errors(),
             ]);
         }
 
         $query = [
             'username' => $data['username'], 
             'password' => $data['password'], 
-            'verified' => true];
+            'verified' => true,
+        ];
 
         $remember = true;
 
         if (!Auth::attempt($query, $remember)) {
-            return response()->json([
+            return response()->prettyjson([
                 'status' => config('status.error'),
-                'error' => config('status.login_failed')
+                'error' => config('status.login_failed'),
             ]);
         }
 
-        return response()->json(['status' => config('status.ok')]);
+        return response()->prettyjson(['status' => config('status.ok')]);
     }
 }
 

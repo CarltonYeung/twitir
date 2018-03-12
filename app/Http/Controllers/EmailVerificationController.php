@@ -16,7 +16,7 @@ class EmailVerificationController extends Controller
     {
         return view('verify')->with([
         	'email' => $request->query('email', ''),
-        	'key' => $request->query('key', '')
+        	'key' => $request->query('key', ''),
         ]);
     }
 
@@ -33,9 +33,9 @@ class EmailVerificationController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
+            return response()->prettyjson([
                 'status' => config('status.error'),
-                'error' => $validator->errors()
+                'error' => $validator->errors(),
             ]);
         }
 
@@ -46,7 +46,7 @@ class EmailVerificationController extends Controller
         ])->first();
 
         if (!$user) {
-            return response()->json([
+            return response()->prettyjson([
                 'status' => config('status.error'),
                 'error' => config('status.verification_failed'),
             ]);
@@ -55,7 +55,7 @@ class EmailVerificationController extends Controller
         $user->verified = true;
         $user->save();
 
-        return response()->json(['status' => config('status.ok')]);
+        return response()->prettyjson(['status' => config('status.ok')]);
     }
 }
 

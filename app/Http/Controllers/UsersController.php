@@ -34,9 +34,9 @@ class UsersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
+            return response()->prettyjson([
                 'status' => config('status.error'),
-                'error' => $validator->errors()
+                'error' => $validator->errors(),
             ]);
         }
 
@@ -50,7 +50,7 @@ class UsersController extends Controller
 
         Mail::to($user->email)->send(new AddUserVerification($user));
 
-        return response()->json(['status' => config('status.ok')]);
+        return response()->prettyjson(['status' => config('status.ok')]);
     }
 
 }

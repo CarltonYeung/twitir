@@ -6,6 +6,8 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Validator;
+use MongoDB;
 
 class ItemsController extends Controller
 {
@@ -27,13 +29,99 @@ class ItemsController extends Controller
     public function additem(Request $request)
     {
     	if (!Auth::check()) {
-            return response()->json([
+            return response()->prettyjson([
                 'status' => config('status.error'),
-                'error' => config('status.unauthorized')
+                'error' => config('status.unauthorized'),
             ]);
         }
 
-        return response()->json(['status' => config('status.ok')]);
+        $data = $request->json()->all();
+
+        $validator = Validator::make($data, [
+            'content' => [
+                'required',
+                'string',
+                'max:280',
+            ],
+            'childType' => [
+                'present',
+                'string',
+                'nullable',
+                'in' => [
+                    null,
+                    'retweet',
+                    'reply',
+                ],
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => $validator->errors(),
+            ]);
+        }
+
+        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+
+        $collection = $client->twitir->items;
+
+        $item = $collection->insertOne([
+            'username' => Auth::user()->username,
+            'property' => [
+                'likes' => 0,
+            ],
+            'retweeted' => 0,
+            'content' => $data['content'],
+            // 'childType' => $data['childType'],
+            // 'parent' => null,
+            // 'media' => [],
+            'timestamp' => time(),
+        ]);
+
+        return response()->prettyjson([
+            'status' => config('status.ok'),
+            'id' => ($item->getInsertedId())->__toString(),
+        ]);
+    }
+
+    public function getitem(Request $request, $id)
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => [
+                'required',
+                'regex:(^[0-9a-f]{24}$)',
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => $validator->errors(),
+            ]);
+        }
+
+        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+
+        $collection = $client->twitir->items;
+
+        $item = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
+
+        if (!$item) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => 'There is no item with this id',
+            ]);
+        }
+
+        $item = iterator_to_array($item);
+        $item = ['id' => $item['_id']->__toString()] + $item;
+        unset($item['_id']);
+
+        return response()->prettyjson([
+            'status' => config('status.ok'),
+            'item' => $item,
+        ]);
     }
 
 }
