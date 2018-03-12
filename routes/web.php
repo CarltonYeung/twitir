@@ -34,3 +34,7 @@ Route::get('/logout', 'LogoutController@logout');
 Route::get('/additem', 'ItemsController@index')->name('additem');
 Route::post('/additem', 'ItemsController@additem');
 Route::get('item/{id}', 'ItemsController@getitem')->name('getitem');
+
+// search
+Route::get('/search', 'SearchController@index')->name('search');
+Route::post('/search', 'SearchController@search');
