@@ -29,7 +29,7 @@ class SearchController extends Controller
         $validator = Validator::make($data, [
             'timestamp' => [
                 'filled',
-                'integer',
+                'integer', // integer strings don't fail
             ],
             'limit' => [
                 'filled',
@@ -50,15 +50,12 @@ class SearchController extends Controller
 
         $collection = $client->twitir->items;
 
-        $query = [];
+        // integer type cast is needed because validator doesn't fail integer strings
+        $timestamp = array_key_exists('timestamp', $data) ? intval($data['timestamp']) : time();
 
-        if (array_key_exists('timestamp', $data)) {
-            $query['timestamp'] = ['$lte' => $data['timestamp']];
-        } else {
-            $query['timestamp'] = ['$lte' => time()];
-        }
+        $query['timestamp'] = ['$lte' => $timestamp];
 
-        $limit = array_key_exists('limit', $data) ? $data['limit'] : 25;
+        $limit = array_key_exists('limit', $data) ? intval($data['limit']) : 25;
 
         $cursor = $collection->find($query, [
             'limit' => $limit,
