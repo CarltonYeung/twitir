@@ -7,6 +7,8 @@
 verify email
 @endcomponent
 
+validation key: <{{ $verification_key }}>
+
 thanks,<br>
 carlton @ {{ config('app.name') }}
 @endcomponent

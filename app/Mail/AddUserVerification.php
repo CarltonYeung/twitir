@@ -34,7 +34,8 @@ class AddUserVerification extends Mailable
     {
         return $this->markdown('emails.user.adduserverification')->with([
             'username' => $this->user->username,
-            'verify_link' => request()->getHttpHost().'/verify?email='.$this->user->email.'&key='.$this->user->verification_key
+            'verify_link' => request()->getHttpHost().'/verify?email='.$this->user->email.'&key='.$this->user->verification_key,
+            'verification_key' => $this->user->verification_key,
         ]);
     }
 }
