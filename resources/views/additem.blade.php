@@ -1,40 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
-<div class='container'>
-    <div class='row justify-content-center align-middle'>
-        <div class='col-md-6'>
-            <div class='card border-secondary'>
-                <div class='card-body'>
-                    <h2 class="card-title">/additem</h2>
+<form id='additem' method='POST'>
+    @csrf
 
-                    <form id='additem' method='POST'>
-                        @csrf
+    <label for='content'>content</label>
+    <textarea type='text' id='content' rows='3'></textarea>
+    <p><small>message body of tweet</small></p>
 
-                        <div class='form-group'>
-                            <label for='content'>content</label>
-                            <textarea type='text' class='form-control' id='content' rows='3' required></textarea>
-                            <small class="form-text text-muted">message body of tweet</small>
-                        </div>
-
-                        <div class='form-group'>
-                            <label for='child-type'>child type</label>
-                            <select class='form-control' id='child-type'>
-                                <option value='null'>null</option>
-                                <option value='retweet'>retweet</option>
-                                <option value='reply'>reply</option>
-                            </select>
-                            <small class="form-text text-muted">string ("retweet" or "reply"), null if this is not a child tweet</small>
-                        </div>
-
-                        <br />
-                        <button class='btn btn-secondary'>/additem</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <label for='child-type'>child type</label>
+    <select id='child-type'>
+        <option value='null'>null</option>
+        <option value='retweet'>retweet</option>
+        <option value='reply'>reply</option>
+    </select>
+    <p><small>string ("retweet" or "reply"), null if this is not a child tweet</small></p>
+    
+    <br />
+    <button>/additem</button>
+</form>
 @endsection
 
 @section('style')
@@ -79,10 +63,6 @@
                 if (data.status === 'OK') {
                     // Clear the fields of the additem form
                     $('#content').val('');
-
-                    $('.card').removeClass('border-secondary border-danger').addClass('border-success');
-                } else {
-                    $('.card').removeClass('border-success border-secondary').addClass('border-danger');
                 }
 
             },
