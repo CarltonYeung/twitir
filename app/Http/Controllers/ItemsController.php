@@ -44,7 +44,7 @@ class ItemsController extends Controller
                 'max:280',
             ],
             'childType' => [
-                'present',
+                // 'present',
                 'string',
                 'nullable',
                 'in' => [
