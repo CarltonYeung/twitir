@@ -149,6 +149,84 @@ class UsersController extends Controller
         ]);
     }
 
+    public function getfollowers(Request $request, $username)
+    {
+        $limit = $request->query('limit');
+
+        $validator = Validator::make(
+            [
+                'username' => $username, 
+                'limit' => $limit
+            ],
+            [
+                'username' => 'required|string|max:255',
+                'limit' => 'nullable|integer|min:1|max:200',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => $validator->errors(),
+            ]);
+        }
+
+        $limit = $limit ? intval($limit) : 50;
+
+        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+
+        $collection = $client->twitir->follow;
+
+        $user = $collection->findOne(
+            ['username' => $username], 
+            ['projection' => ['followers' => ['$slice' => $limit]]]
+        );
+
+        return response()->prettyjson([
+            'status' => config('status.ok'),
+            'users' => $user->followers,
+        ]);
+    }
+
+    public function getfollowing(Request $request, $username)
+    {
+        $limit = $request->query('limit');
+
+        $validator = Validator::make(
+            [
+                'username' => $username, 
+                'limit' => $limit
+            ],
+            [
+                'username' => 'required|string|max:255',
+                'limit' => 'nullable|integer|min:1|max:200',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => $validator->errors(),
+            ]);
+        }
+
+        $limit = $limit ? intval($limit) : 50;
+
+        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+
+        $collection = $client->twitir->follow;
+
+        $user = $collection->findOne(
+            ['username' => $username], 
+            ['projection' => ['following' => ['$slice' => $limit]]]
+        );
+
+        return response()->prettyjson([
+            'status' => config('status.ok'),
+            'users' => $user->following,
+        ]);
+    }
+
 }
 
 ?>
