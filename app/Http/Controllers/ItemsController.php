@@ -124,6 +124,45 @@ class ItemsController extends Controller
         ]);
     }
 
+    public function deleteitem(Request $request, $id)
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => [
+                'required',
+                'regex:(^[0-9a-f]{24}$)',
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => $validator->errors(),
+            ]);
+        }
+
+        if (!Auth::check()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => config('status.unauthorized'),
+            ]);
+        }
+
+        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+
+        $collection = $client->twitir->items;
+
+        $item = $collection->findOneAndDelete([
+            '_id' => new MongoDB\BSON\ObjectId($id),
+            'username' => Auth::user()->username,
+        ]);
+
+        if (!$item) {
+            return response('', 400);
+        }
+
+        return response('', 200);
+    }
+
 }
 
 ?>

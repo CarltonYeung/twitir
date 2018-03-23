@@ -33,7 +33,8 @@ Route::get('/logout', 'LogoutController@logout');
 // tweets/items/posts
 Route::get('/additem', 'ItemsController@index')->name('additem');
 Route::post('/additem', 'ItemsController@additem');
-Route::get('item/{id}', 'ItemsController@getitem')->name('getitem');
+Route::get('/item/{id}', 'ItemsController@getitem');
+Route::delete('/item/{id}', 'ItemsController@deleteitem');
 
 // search
 Route::get('/search', 'SearchController@index')->name('search');
