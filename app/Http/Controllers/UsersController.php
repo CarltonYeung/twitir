@@ -120,6 +120,35 @@ class UsersController extends Controller
         return response()->prettyjson(['status' => config('status.ok')]);
     }
 
+    public function getuser($username)
+    {
+        $user = User::select('email')->where('username', $username)->first();
+
+        if (!$user) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => 'username does not exist',
+            ]);
+        }
+
+        $email = $user->email;
+
+        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+
+        $collection = $client->twitir->follow;
+
+        $user = $collection->findOne(['username' => $username]);
+
+        return response()->prettyjson([
+            'status' => config('status.ok'),
+            'user' => [
+                'email' => $email,
+                'followers' => count($user->followers),
+                'following' => count($user->following),
+            ]
+        ]);
+    }
+
 }
 
 ?>

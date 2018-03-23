@@ -42,3 +42,6 @@ Route::post('/search', 'SearchController@search');
 
 // follow
 Route::post('/follow', 'UsersController@follow')->name('follow');
+
+// getuser information
+Route::get('/user/{username}', 'UsersController@getuser')->name('getuser');
