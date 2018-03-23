@@ -39,3 +39,6 @@ Route::delete('/item/{id}', 'ItemsController@deleteitem');
 // search
 Route::get('/search', 'SearchController@index')->name('search');
 Route::post('/search', 'SearchController@search');
+
+// follow
+Route::post('/follow', 'UsersController@follow')->name('follow');
