@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -58,5 +58,3 @@ class EmailVerificationController extends Controller
         return response()->prettyjson(['status' => config('status.ok')]);
     }
 }
-
-?>

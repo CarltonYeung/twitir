@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
 use MongoDB;
+use Validator;
 
 class ItemsController extends Controller
 {
@@ -164,5 +164,3 @@ class ItemsController extends Controller
     }
 
 }
-
-?>

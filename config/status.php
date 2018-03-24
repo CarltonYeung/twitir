@@ -29,5 +29,3 @@ return [
     'unauthorized' => 'Action prohibited. Please log in.',
 
 ];
-
-?>

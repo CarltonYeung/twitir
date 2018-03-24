@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Http\Controllers\Controller;
+use App\User;
 
 class HomepageController extends Controller
 {
@@ -16,5 +16,3 @@ class HomepageController extends Controller
     }
 
 }
-
-?>

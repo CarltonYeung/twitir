@@ -16,5 +16,3 @@ class LogoutController extends Controller
         return response()->prettyjson(['status' => config('status.ok')]);
     }
 }
-
-?>

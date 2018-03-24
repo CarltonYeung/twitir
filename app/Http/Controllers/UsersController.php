@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Mail;
 use App\Mail\AddUserVerification;
-use Illuminate\Support\Facades\Hash;
-use Validator;
-use MongoDB;
+use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Mail;
+use MongoDB;
+use Validator;
 
 class UsersController extends Controller
 {
@@ -228,5 +228,3 @@ class UsersController extends Controller
     }
 
 }
-
-?>

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -55,5 +55,3 @@ class LoginController extends Controller
         return response()->prettyjson(['status' => config('status.ok')]);
     }
 }
-
-?>
