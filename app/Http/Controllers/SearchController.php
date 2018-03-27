@@ -27,16 +27,11 @@ class SearchController extends Controller
         $data = $request->json()->all();
 
         $validator = Validator::make($data, [
-            'timestamp' => [
-                'filled',
-                'integer', // integer strings don't fail
-            ],
-            'limit' => [
-                'filled',
-                'integer',
-                'min:1',
-                'max:100',
-            ],
+            'timestamp' => 'filled|integer', // integer strings are allowed
+            'limit' => 'filled|integer|min:1|max:100',
+            'q' => 'filled|string',
+            'username' => 'filled|string',
+            'following' => 'filled|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -47,15 +42,52 @@ class SearchController extends Controller
         }
 
         $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
-
         $collection = $client->twitir->items;
 
         // integer type cast is needed because validator doesn't fail integer strings
+        $limit = array_key_exists('limit', $data) ? intval($data['limit']) : 25;
         $timestamp = array_key_exists('timestamp', $data) ? intval($data['timestamp']) : time();
-
         $query['timestamp'] = ['$lte' => $timestamp];
 
-        $limit = array_key_exists('limit', $data) ? intval($data['limit']) : 25;
+        if (array_key_exists('q', $data)) {
+            $regex = preg_replace('/\s+/', '|', $data['q']);
+            $query['content'] = ['$regex' => $regex, '$options' => 'i'];
+        }
+
+        if (array_key_exists('username', $data)) {
+            $query['username'] = $data['username'];
+        }
+
+        if (!array_key_exists('following', $data) || $data['following']) {
+            if (!Auth::check()) {
+                return response()->prettyjson([
+                    'status' => config('status.error'),
+                    'error' => config('status.unauthorized'),
+                ]);
+            }
+
+            $follow = $client->twitir->follow;
+            $user = $follow->findOne(['username' => Auth::user()->username]);
+            $following = iterator_to_array($user->following); // Convert from BSON
+
+            if (!count($following) || !$following) {
+                return response()->prettyjson([
+                    'status' => config('status.error'),
+                    'error' => 'Not following anyone',
+                ]);
+            }
+
+            if (array_key_exists('username', $query)) {
+                if (!in_array($query['username'], $following, true)) {
+                    return response()->prettyjson([
+                        'status' => config('status.error'),
+                        'error' => 'Not a follower of the given username. Please follow the user or set "following" to false.',
+                    ]);
+                }
+            } else {
+                $query['username'] = ['$regex' => implode('|', $following)];
+            }
+        }
 
         $cursor = $collection->find($query, [
             'limit' => $limit,
