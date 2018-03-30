@@ -14,11 +14,11 @@ use Validator;
 
 class UsersController extends Controller
 {
-    private $client = null;
+    private static $client = null;
 
     public function __construct()
     {
-        $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        self::$client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
     }
 
 	/**
@@ -59,7 +59,7 @@ class UsersController extends Controller
         ]);
 
         // Create a Mongo document for the user
-        $collection = $this->client->twitir->follows;
+        $collection = self::$client->twitir->follows;
 
         $collection->insertOne([
             'username' => $data['username'],
@@ -102,7 +102,7 @@ class UsersController extends Controller
             ]);
         }
 
-        $collection = $this->client->twitir->follows;
+        $collection = self::$client->twitir->follows;
 
         $followee = $collection->findOne([
             'username' => $data['username'],
@@ -143,7 +143,7 @@ class UsersController extends Controller
 
         $email = $user->email;
 
-        $collection = $this->client->twitir->follows;
+        $collection = self::$client->twitir->follows;
 
         $user = $collection->findOne(['username' => $username]);
 
@@ -181,7 +181,7 @@ class UsersController extends Controller
 
         $limit = $limit ? intval($limit) : 50;
 
-        $collection = $this->client->twitir->follows;
+        $collection = self::$client->twitir->follows;
 
         $user = $collection->findOne(
             ['username' => $username], 
@@ -218,7 +218,7 @@ class UsersController extends Controller
 
         $limit = $limit ? intval($limit) : 50;
 
-        $collection = $this->client->twitir->follows;
+        $collection = self::$client->twitir->follows;
 
         $user = $collection->findOne(
             ['username' => $username], 

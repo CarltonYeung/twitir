@@ -11,11 +11,11 @@ use Validator;
 
 class SearchController extends Controller
 {
-    private $client= null;
+    private static $client= null;
 
     public function __construct()
     {
-        $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        self::$client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
     }
 
     /**
@@ -48,7 +48,7 @@ class SearchController extends Controller
             ]);
         }
 
-        $collection = $this->client->twitir->items;
+        $collection = self::$client->twitir->items;
 
         // integer type cast is needed because validator doesn't fail integer strings
         $limit = array_key_exists('limit', $data) ? intval($data['limit']) : 25;
@@ -72,7 +72,7 @@ class SearchController extends Controller
                 ]);
             }
 
-            $follow = $this->client->twitir->follows;
+            $follow = self::$client->twitir->follows;
 
             $user = $follow->findOne(['username' => Auth::user()->username]);
 

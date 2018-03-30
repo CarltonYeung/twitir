@@ -11,11 +11,11 @@ use Validator;
 
 class ItemsController extends Controller
 {
-    private $client = null;
+    private static $client = null;
 
     public function __construct()
     {
-        $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        self::$client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
     }
 
     /**
@@ -68,7 +68,7 @@ class ItemsController extends Controller
             ]);
         }
 
-        $collection = $this->client->twitir->items;
+        $collection = self::$client->twitir->items;
 
         $item = $collection->insertOne([
             'username' => Auth::user()->username,
@@ -105,7 +105,7 @@ class ItemsController extends Controller
             ]);
         }
 
-        $collection = $this->client->twitir->items;
+        $collection = self::$client->twitir->items;
 
         $item = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
 
@@ -149,7 +149,7 @@ class ItemsController extends Controller
             ]);
         }
 
-        $collection = $this->client->twitir->items;
+        $collection = self::$client->twitir->items;
 
         $item = $collection->findOneAndDelete([
             '_id' => new MongoDB\BSON\ObjectId($id),
