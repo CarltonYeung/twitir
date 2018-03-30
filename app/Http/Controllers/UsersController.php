@@ -90,6 +90,13 @@ class UsersController extends Controller
             ]);
         }
 
+        if (Auth::user()->username === $data['username']) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => 'Cannot follow yourself.',
+            ]);
+        }
+
         $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
 
         $collection = $client->twitir->follows;
