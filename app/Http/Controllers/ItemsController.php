@@ -73,9 +73,9 @@ class ItemsController extends Controller
             ],
             'retweeted' => 0,
             'content' => $data['content'],
-            // 'childType' => $data['childType'],
-            // 'parent' => null,
-            // 'media' => [],
+            'childType' => $data['childType'],
+            'parent' => null,
+            'media' => [],
             'timestamp' => time(),
         ]);
 

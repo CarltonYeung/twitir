@@ -98,13 +98,6 @@ class SearchController extends Controller
 
         $items = $cursor->toArray();
 
-        if (!count($items) || !$items) {
-            return response()->prettyjson([
-                'status' => config('status.error'),
-                'error' => 'No matches found',
-            ]);
-        }
-
         for ($i = 0; $i < count($items); $i++) {
             $item = iterator_to_array($items[$i]);
             $item = ['id' => $item['_id']->__toString()] + $item;
