@@ -66,7 +66,7 @@ class SearchController extends Controller
                 ]);
             }
 
-            $follow = $client->twitir->follow;
+            $follow = $client->twitir->follows;
             $user = $follow->findOne(['username' => Auth::user()->username]);
             $following = iterator_to_array($user->following); // Convert from BSON
 

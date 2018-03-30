@@ -92,7 +92,7 @@ class UsersController extends Controller
 
         $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
 
-        $collection = $client->twitir->follow;
+        $collection = $client->twitir->follows;
 
         $followee = $collection->findOne([
             'username' => $data['username'],
@@ -135,7 +135,7 @@ class UsersController extends Controller
 
         $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
 
-        $collection = $client->twitir->follow;
+        $collection = $client->twitir->follows;
 
         $user = $collection->findOne(['username' => $username]);
 
@@ -175,7 +175,7 @@ class UsersController extends Controller
 
         $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
 
-        $collection = $client->twitir->follow;
+        $collection = $client->twitir->follows;
 
         $user = $collection->findOne(
             ['username' => $username], 
@@ -214,7 +214,7 @@ class UsersController extends Controller
 
         $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
 
-        $collection = $client->twitir->follow;
+        $collection = $client->twitir->follows;
 
         $user = $collection->findOne(
             ['username' => $username], 
