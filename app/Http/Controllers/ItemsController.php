@@ -11,6 +11,8 @@ use Validator;
 
 class ItemsController extends Controller
 {
+    private $client = null;
+
     /**
      * Handle GET request.
      */
@@ -61,7 +63,9 @@ class ItemsController extends Controller
             ]);
         }
 
-        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        if (!$this->client) {
+            $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        }
 
         $collection = $client->twitir->items;
 
@@ -100,7 +104,9 @@ class ItemsController extends Controller
             ]);
         }
 
-        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        if (!$this->client) {
+            $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        }
 
         $collection = $client->twitir->items;
 
@@ -146,7 +152,9 @@ class ItemsController extends Controller
             ]);
         }
 
-        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        if (!$this->client) {
+            $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        }
 
         $collection = $client->twitir->items;
 

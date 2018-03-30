@@ -11,6 +11,8 @@ use Validator;
 
 class SearchController extends Controller
 {
+    private $client= null;
+
     /**
      * Handle GET request.
      */
@@ -41,7 +43,10 @@ class SearchController extends Controller
             ]);
         }
 
-        $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        if (!$this->client) {
+            $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        }
+        
         $collection = $client->twitir->items;
 
         // integer type cast is needed because validator doesn't fail integer strings
