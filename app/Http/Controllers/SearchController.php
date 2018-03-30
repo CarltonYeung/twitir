@@ -44,10 +44,10 @@ class SearchController extends Controller
         }
 
         if (!$this->client) {
-            $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
         }
 
-        $collection = $client->twitir->items;
+        $collection = $this->client->twitir->items;
 
         // integer type cast is needed because validator doesn't fail integer strings
         $limit = array_key_exists('limit', $data) ? intval($data['limit']) : 25;
@@ -71,7 +71,7 @@ class SearchController extends Controller
                 ]);
             }
 
-            $follow = $client->twitir->follows;
+            $follow = $this->client->twitir->follows;
 
             $user = $follow->findOne(['username' => Auth::user()->username]);
 

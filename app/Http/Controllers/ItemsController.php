@@ -64,10 +64,10 @@ class ItemsController extends Controller
         }
 
         if (!$this->client) {
-            $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
         }
 
-        $collection = $client->twitir->items;
+        $collection = $this->client->twitir->items;
 
         $item = $collection->insertOne([
             'username' => Auth::user()->username,
@@ -105,10 +105,10 @@ class ItemsController extends Controller
         }
 
         if (!$this->client) {
-            $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
         }
 
-        $collection = $client->twitir->items;
+        $collection = $this->client->twitir->items;
 
         $item = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
 
@@ -153,10 +153,10 @@ class ItemsController extends Controller
         }
 
         if (!$this->client) {
-            $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
         }
 
-        $collection = $client->twitir->items;
+        $collection = $this->client->twitir->items;
 
         $item = $collection->findOneAndDelete([
             '_id' => new MongoDB\BSON\ObjectId($id),
