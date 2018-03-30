@@ -44,7 +44,6 @@ class ItemsController extends Controller
                 'max:280',
             ],
             'childType' => [
-                // 'present',
                 'string',
                 'nullable',
                 'in' => [
@@ -74,8 +73,8 @@ class ItemsController extends Controller
             'retweeted' => 0,
             'content' => $data['content'],
             'childType' => $data['childType'],
-            'parent' => null,
-            'media' => [],
+            // 'parent' => null,
+            // 'media' => [],
             'timestamp' => time(),
         ]);
 
