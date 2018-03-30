@@ -54,7 +54,7 @@ class UsersController extends Controller
         // Create a Mongo document for the user
         $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
 
-        $collection = $client->twitir->follow;
+        $collection = $client->twitir->follows;
 
         $collection->insertOne([
             'username' => $data['username'],
