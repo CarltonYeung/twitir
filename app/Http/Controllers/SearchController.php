@@ -13,6 +13,11 @@ class SearchController extends Controller
 {
     private $client= null;
 
+    public function __construct()
+    {
+        $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+    }
+
     /**
      * Handle GET request.
      */
@@ -41,10 +46,6 @@ class SearchController extends Controller
                 'status' => config('status.error'),
                 'error' => $validator->errors(),
             ]);
-        }
-
-        if (!$this->client) {
-            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
         }
 
         $collection = $this->client->twitir->items;

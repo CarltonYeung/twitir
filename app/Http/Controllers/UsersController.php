@@ -16,6 +16,11 @@ class UsersController extends Controller
 {
     private $client = null;
 
+    public function __construct()
+    {
+        $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+    }
+
 	/**
      * Handle GET request.
      */
@@ -54,10 +59,6 @@ class UsersController extends Controller
         ]);
 
         // Create a Mongo document for the user
-        if (!$this->client) {
-            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
-        }
-
         $collection = $this->client->twitir->follows;
 
         $collection->insertOne([
@@ -101,10 +102,6 @@ class UsersController extends Controller
             ]);
         }
 
-        if (!$this->client) {
-            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
-        }
-
         $collection = $this->client->twitir->follows;
 
         $followee = $collection->findOne([
@@ -146,10 +143,6 @@ class UsersController extends Controller
 
         $email = $user->email;
 
-        if (!$this->client) {
-            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
-        }
-
         $collection = $this->client->twitir->follows;
 
         $user = $collection->findOne(['username' => $username]);
@@ -188,10 +181,6 @@ class UsersController extends Controller
 
         $limit = $limit ? intval($limit) : 50;
 
-        if (!$this->client) {
-            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
-        }
-
         $collection = $this->client->twitir->follows;
 
         $user = $collection->findOne(
@@ -228,10 +217,6 @@ class UsersController extends Controller
         }
 
         $limit = $limit ? intval($limit) : 50;
-
-        if (!$this->client) {
-            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
-        }
 
         $collection = $this->client->twitir->follows;
 

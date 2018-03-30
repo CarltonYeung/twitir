@@ -13,6 +13,11 @@ class ItemsController extends Controller
 {
     private $client = null;
 
+    public function __construct()
+    {
+        $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+    }
+
     /**
      * Handle GET request.
      */
@@ -63,10 +68,6 @@ class ItemsController extends Controller
             ]);
         }
 
-        if (!$this->client) {
-            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
-        }
-
         $collection = $this->client->twitir->items;
 
         $item = $collection->insertOne([
@@ -102,10 +103,6 @@ class ItemsController extends Controller
                 'status' => config('status.error'),
                 'error' => $validator->errors(),
             ]);
-        }
-
-        if (!$this->client) {
-            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
         }
 
         $collection = $this->client->twitir->items;
@@ -150,10 +147,6 @@ class ItemsController extends Controller
                 'status' => config('status.error'),
                 'error' => config('status.unauthorized'),
             ]);
-        }
-
-        if (!$this->client) {
-            $this->client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
         }
 
         $collection = $this->client->twitir->items;
