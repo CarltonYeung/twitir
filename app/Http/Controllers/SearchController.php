@@ -46,7 +46,7 @@ class SearchController extends Controller
         if (!$this->client) {
             $client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
         }
-        
+
         $collection = $client->twitir->items;
 
         // integer type cast is needed because validator doesn't fail integer strings
@@ -72,13 +72,15 @@ class SearchController extends Controller
             }
 
             $follow = $client->twitir->follows;
+
             $user = $follow->findOne(['username' => Auth::user()->username]);
+
             $following = iterator_to_array($user->following); // Convert from BSON
 
-            if (!count($following) || !$following) {
+            if (!count($following)) {
                 return response()->prettyjson([
-                    'status' => config('status.error'),
-                    'error' => 'Not following anyone',
+                    'status' => config('status.ok'),
+                    'items' => [],
                 ]);
             }
 
