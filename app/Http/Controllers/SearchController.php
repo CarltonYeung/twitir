@@ -48,8 +48,6 @@ class SearchController extends Controller
             ]);
         }
 
-        $collection = self::$client->twitir->items;
-
         // integer type cast is needed because validator doesn't fail integer strings
         $limit = array_key_exists('limit', $data) ? intval($data['limit']) : 25;
         $timestamp = array_key_exists('timestamp', $data) ? intval($data['timestamp']) : time();
@@ -96,6 +94,8 @@ class SearchController extends Controller
                 $query['username'] = ['$regex' => implode('|', $following)];
             }
         }
+
+        $collection = self::$client->twitir->items;
 
         $cursor = $collection->find($query, [
             'limit' => $limit,
