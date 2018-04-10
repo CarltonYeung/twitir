@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Cassandra;
 
 class hw4Controller extends Controller
 {
