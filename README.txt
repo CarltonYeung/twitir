@@ -20,9 +20,30 @@ MAIL_ENCRYPTION=null
 ec2 mysql remote access setup
 sudo apt install mysql-server
 sudo nano /etc/mysql/my.cnf
-	[mysqld]
-	bind-address = 0.0.0.0
+    [mysqld]
+    bind-address = 0.0.0.0
 mysql -u root -p
-	use twitir;
-	CREATE TABLE users;
-	ALTER TABLE users add id
+    use twitir;
+    CREATE TABLE users;
+    ALTER TABLE users add id
+
+
+Load Balancer w/ NGINX
+nginx.conf
+    include /etc/nginx/sites-available/load-balancer.conf
+
+load-balancer.conf
+upstream twitir {
+    ip_hash;
+    server 18.188.38.202:80;
+    server 18.188.45.176:80;
+}
+
+server {
+    listen 80;
+    server_name cayeung.cse356.compas.cs.stonybrook.edu;
+    location ~ {
+        proxy_pass http://twitir;
+        proxy_next_upstream error timeout http_500;
+    }
+}

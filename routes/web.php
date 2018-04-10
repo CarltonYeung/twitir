@@ -47,3 +47,7 @@ Route::post('/follow', 'UsersController@follow')->name('follow');
 Route::get('/user/{username}', 'UsersController@getuser')->name('getuser');
 Route::get('/user/{username}/followers', 'UsersController@getfollowers')->name('followers');
 Route::get('/user/{username}/following', 'UsersController@getfollowing')->name('following');
+
+// hw4 cassandra test
+Route::post('/deposit', 'hw4Controller@deposit');
+Route::get('/retrieve', 'hw4Controller@retrieve');
