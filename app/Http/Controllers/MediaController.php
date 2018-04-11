@@ -39,24 +39,28 @@ class MediaController extends Controller
 
         $cluster = Cassandra::cluster()->build();
 
-        $keyspace = 'twitir';
+        $keyspace = config('cassandra.keyspace');
 
         $session = $cluster->connect($keyspace);
 
+        $id = new Cassandra\Uuid()->uuid();
+
         $session->execute(
-            'INSERT INTO media (filename, contents, type, size) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . config('cassandra.table') . ' (id, filename, contents, type, size, refcount) VALUES (?, ?, ?, ?, ?, ?)',
             [
                 'arguments' => [
+                    $id,
                     $_FILES['content']['name'],
                     new Cassandra\Blob(file_get_contents($_FILES['content']['tmp_name'])),
                     $_FILES['content']['type'],
                     $_FILES['content']['size'],
+                    0,
             ],
         ]);
 
         return response()->prettyjson([
             'status' => config('status.ok'),
-            'id' => $_FILES['content']['name'],
+            'id' => $id,
         ]);
     }
 
@@ -64,12 +68,12 @@ class MediaController extends Controller
     {
         $cluster = Cassandra::cluster()->build();
 
-        $keyspace = 'twitir';
+        $keyspace = config('cassandra.keyspace');
 
         $session = $cluster->connect($keyspace);
 
         $rows = $session->execute(
-            'SELECT contents, type FROM twitir.media WHERE filename = ?',
+            'SELECT contents, type FROM ' . config('cassandra.keyspace') . '.' . config('cassandra.table') . ' WHERE id = ?',
             [
                 'arguments' => [
                     $id,
