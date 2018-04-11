@@ -19,9 +19,6 @@ class MediaController extends Controller
         self::$client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
     }
 
-    /**
-     * Handle GET request.
-     */
     public function index(Request $request)
     {
         if (!Auth::check()) {
@@ -29,6 +26,55 @@ class MediaController extends Controller
         }
 
         return view('addmedia');
+    }
+
+    public function addmedia(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => config('status.unauthorized'),
+            ]);
+        }
+
+        $cluster = Cassandra::cluster()->build();
+
+        $keyspace = 'twitir';
+
+        $session = $cluster->connect($keyspace);
+
+        $session->execute(
+            'INSERT INTO media (filename, contents, type, size) VALUES (?, ?, ?, ?)',
+            [
+                'arguments' => [
+                    $_FILES['contents']['name'],
+                    new Cassandra\Blob(file_get_contents($_FILES['contents']['tmp_name'])),
+                    $_FILES['contents']['type'],
+                    $_FILES['contents']['size'],
+            ],
+        ]);
+    }
+
+    public function getmedia($id)
+    {
+        $cluster = Cassandra::cluster()->build();
+
+        $keyspace = 'twitir';
+
+        $session = $cluster->connect($keyspace);
+
+        $rows = $session->execute(
+            'SELECT contents, type FROM twitir.media WHERE filename = ?',
+            [
+                'arguments' => [
+                    $_GET['filename'],
+            ],
+        ]);
+
+        foreach ($rows as $row) {
+            header('Content-Type: '.$row['type']);
+            echo $row['contents']->toBinaryString();
+        }
     }
 
 }

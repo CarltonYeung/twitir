@@ -39,6 +39,8 @@ Route::post('/item/{id}/like', 'ItemsController@likeitem');
 
 // media
 Route::get('/addmedia', 'MediaController@index')->name('addmedia');
+Route::post('/addmedia', 'MediaController@addmedia');
+Route::get('/media/{id}', 'MediaController@getmedia');
 
 // search
 Route::get('/search', 'SearchController@index')->name('search');
