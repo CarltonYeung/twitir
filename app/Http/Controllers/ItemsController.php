@@ -216,7 +216,7 @@ class ItemsController extends Controller
         }
 
         $collection = self::$client->twitir->items;
-        
+
         $item = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
 
         if (!$item) {
@@ -228,7 +228,7 @@ class ItemsController extends Controller
 
         $update;
         if (!array_key_exists('like', $data) || $data['like']) {
-            if (in_array(Auth::user()->username, $item->property->likedBy)) {
+            if (in_array(Auth::user()->username, $item->toArray()['property']['likedBy'])) {
                 return response()->prettyjson([
                     'status' => config('status.error'),
                     'error' => "You already liked this item.",
