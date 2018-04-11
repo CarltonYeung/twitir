@@ -4,7 +4,7 @@
 <form id='addmedia' method = 'POST' enctype='multipart/form-data'>
     @csrf
 
-    <input type='file' name='content' accept='image/*|video/*'>
+    <input type='file' name='content' id='content' accept='image/*|video/*'>
     <br />
     <br />
     <button>/addmedia</button>
@@ -20,7 +20,7 @@
 <script>
     $('#addmedia').submit(function() {
         var fd = new FormData();
-        fd.append('content', input.files[0]);
+        fd.append('content', $('#content').files[0]);
 
         $.ajax({
             type: 'POST',
