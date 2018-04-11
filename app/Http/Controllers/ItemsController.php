@@ -216,6 +216,7 @@ class ItemsController extends Controller
         }
 
         $update;
+        $options = [];
         if (!array_key_exists('like', $data) || $data['like']) {
             $update = [
                 '$inc' => ['property.likes' => 1],
@@ -225,13 +226,14 @@ class ItemsController extends Controller
             $update = [
                 '$inc' => ['property.likes' => -1],
                 '$pull' => ['property.likedBy' => Auth::user()->username],
-                '$multiple' => false,
             ];
+
+            $options = ['multiple' => false];
         }
 
         $collection = self::$client->twitir->items;
 
-        $result = $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($id)], $update);
+        $result = $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($id)], $update, $options);
 
         if (!$result->getMatchedCount() || !$result->getModifiedCount()) {
             return response()->prettyjson([
