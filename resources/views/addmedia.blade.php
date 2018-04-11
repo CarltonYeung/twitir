@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<form id='addmedia' enctype='multipart/form-data'>
+<form id='addmedia' method = 'POST' enctype='multipart/form-data'>
     @csrf
 
     <input type='file' name='content' accept='image/*|video/*'>
