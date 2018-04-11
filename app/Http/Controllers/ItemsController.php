@@ -74,13 +74,11 @@ class ItemsController extends Controller
 
         $collection = self::$client->twitir->items;
 
-        if (array_key_exists('parent', $data)) {
-            $options = [];
-            if (array_key_exists('childType', $data) && $data['childType'] === 'retweet') {
-                $options = ['$inc' => ['retweeted' => 1]];
-            }
+        if (array_key_exists('parent', $data) && array_key_exists('childType', $data)) {
+            $inc = $data['childType'] === 'retweet' ? 1 : 0;
+            $update = ['$inc' => ['retweeted' => $inc]];
 
-            $parent_result = $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $options);
+            $parent_result = $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $update);
 
             if(!$parent_result->getMatchedCount()) {
                 return response()->prettyjson([
