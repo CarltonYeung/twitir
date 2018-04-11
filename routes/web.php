@@ -35,6 +35,7 @@ Route::get('/additem', 'ItemsController@index')->name('additem');
 Route::post('/additem', 'ItemsController@additem');
 Route::get('/item/{id}', 'ItemsController@getitem');
 Route::delete('/item/{id}', 'ItemsController@deleteitem');
+Route::post('/item/{id}/like', 'ItemsController@likeitem');
 
 // search
 Route::get('/search', 'SearchController@index')->name('search');

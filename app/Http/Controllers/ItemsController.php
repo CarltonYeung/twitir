@@ -97,6 +97,7 @@ class ItemsController extends Controller
             'username' => Auth::user()->username,
             'property' => [
                 'likes' => 0,
+                'likedBy' => [],
             ],
             'retweeted' => 0,
             'content' => $data['content'],
@@ -112,7 +113,7 @@ class ItemsController extends Controller
         ]);
     }
 
-    public function getitem(Request $request, $id)
+    public function getitem($id)
     {
         $validator = Validator::make(['id' => $id], [
             'id' => [
@@ -149,7 +150,7 @@ class ItemsController extends Controller
         ]);
     }
 
-    public function deleteitem(Request $request, $id)
+    public function deleteitem($id)
     {
         $validator = Validator::make(['id' => $id], [
             'id' => [
@@ -184,6 +185,49 @@ class ItemsController extends Controller
         }
 
         return response('', 200);
+    }
+
+    public function likeitem($id)
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => [
+                'required',
+                'regex:(^[0-9a-f]{24}$)',
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => $validator->errors(),
+            ]);
+        }
+
+        if (!Auth::check()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => config('status.unauthorized'),
+            ]);
+        }
+
+        $collection = self::$client->twitir->items;
+
+        $result = $collection->updateOne(
+            ['_id' => new MongoDB\BSON\ObjectId($id)],
+            [
+                '$inc' => ['propety.likes' => 1],
+                '$push' => ['property.likedBy' => Auth::user()->username],
+            ]
+        );
+
+        if (!$result->getMatchedCount() || !$result->getModifiedCount()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => "Nah bro.",
+            ]);
+        }
+
+        return response()->prettyjson(['status' => config('status.ok')]);
     }
 
 }
