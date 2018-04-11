@@ -59,6 +59,10 @@ class ItemsController extends Controller
                     'reply',
                 ],
             ],
+            'parent' => [
+                'required_with:childType', // if childType is present and not empty (i.e., not null)
+                'regex:(^[0-9a-f]{24}$)',
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -70,6 +74,22 @@ class ItemsController extends Controller
 
         $collection = self::$client->twitir->items;
 
+        if (array_key_exists('parent', $data)) {
+            $options = [];
+            if (array_key_exists('childType', $data) && $data['childType'] === 'retweet') {
+                $options = ['$inc' => ['retweeted' => 1]]
+            }
+
+            $parent_result = $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $options);
+
+            if(!$parent_result->getMatchedCount()) {
+                return response()->prettyjson([
+                    'status' => config('status.error'),
+                    'error' => 'Parent doesn\'t exist',
+                ]);
+            }
+        }
+
         $item = $collection->insertOne([
             'username' => Auth::user()->username,
             'property' => [
@@ -77,8 +97,8 @@ class ItemsController extends Controller
             ],
             'retweeted' => 0,
             'content' => $data['content'],
-            // 'childType' => array_key_exists('childType', $data) ? $data['childType'] : null,
-            // 'parent' => null,
+            'childType' => array_key_exists('childType', $data) ? $data['childType'] : null,
+            'parent' => array_key_exists('parent', $data) ? $data['parent'] : null,
             // 'media' => [],
             'timestamp' => time(),
         ]);
