@@ -74,7 +74,12 @@ class ItemsController extends Controller
 
         $collection = self::$client->twitir->items;
 
-        if (array_key_exists('parent', $data) && array_key_exists('childType', $data)) {
+        $parent_and_child = array_key_exists('parent', $data)
+                         && array_key_exists('childType', $data)
+                         && $data['parent']
+                         && $data['childType'];
+
+        if ($parent_and_child) {
             $inc = $data['childType'] === 'retweet' ? 1 : 0;
             $update = ['$inc' => ['retweeted' => $inc]];
 
@@ -95,8 +100,8 @@ class ItemsController extends Controller
             ],
             'retweeted' => 0,
             'content' => $data['content'],
-            'childType' => array_key_exists('childType', $data) ? $data['childType'] : null,
-            'parent' => array_key_exists('parent', $data) && array_key_exists('childType', $data) ? $data['parent'] : null,
+            'childType' => $parent_and_child ? $data['childType'] : null,
+            'parent' => $parent_and_child ? $data['parent'] : null,
             // 'media' => [],
             'timestamp' => time(),
         ]);
