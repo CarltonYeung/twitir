@@ -1,11 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<form id='addmedia' method='POST' enctype='multipart/form-data'>
+<form enctype='multipart/form-data'>
     @csrf
 
-    <label for='contents'>media</label>
-    <input type='file' name='contents' id='contents' accept='image/*|video/*'>
+    <input type='file' name='content' accept='image/*|video/*'>
     <br />
     <br />
     <button>/addmedia</button>
@@ -23,7 +22,7 @@
         $.ajax({
             type: 'POST',
             url: '/addmedia',
-            data: new FormData($('#addmedia')),
+            data: new FormData($('form')[0]),
             cache: false,
             contentType: false,
             processData: false,

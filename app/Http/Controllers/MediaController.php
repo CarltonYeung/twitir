@@ -47,16 +47,16 @@ class MediaController extends Controller
             'INSERT INTO media (filename, contents, type, size) VALUES (?, ?, ?, ?)',
             [
                 'arguments' => [
-                    $_FILES['contents']['name'],
-                    new Cassandra\Blob(file_get_contents($_FILES['contents']['tmp_name'])),
-                    $_FILES['contents']['type'],
-                    $_FILES['contents']['size'],
+                    $_FILES['content']['name'],
+                    new Cassandra\Blob(file_get_contents($_FILES['content']['tmp_name'])),
+                    $_FILES['content']['type'],
+                    $_FILES['content']['size'],
             ],
         ]);
 
         return response()->prettyjson([
             'status' => config('status.ok'),
-            'id' => $_FILES['contents']['name'],
+            'id' => $_FILES['content']['name'],
         ]);
     }
 
