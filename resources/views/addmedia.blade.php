@@ -19,10 +19,13 @@
 @section('script')
 <script>
     $('#addmedia').submit(function() {
+        var fd = new FormData();
+        fd.append('content', input.files[0]);
+
         $.ajax({
             type: 'POST',
             url: '/addmedia',
-            data: new FormData($('#addmedia')),
+            data: fd,
             cache: false,
             contentType: false,
             processData: false,
