@@ -226,7 +226,7 @@ class ItemsController extends Controller
                 '$dec' => ['property.likes' => 1],
                 '$pull' => ['property.likedBy' => Auth::user()->username],
                 ['multi' => false],
-            ]
+            ];
         }
 
         $collection = self::$client->twitir->items;
