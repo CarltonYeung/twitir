@@ -15,6 +15,7 @@
             <li><a href="{{ route('adduser') }}">/adduser</a></li>
         @else
             <li><a href="{{ route('additem') }}">/additem</a></li>
+            <li><a href="{{ route('addmedia') }}">/addmedia</a></li>
             <li><a href="{{ route('logout') }}">/logout</a></li>
         @endguest
     </ul>

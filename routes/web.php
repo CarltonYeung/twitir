@@ -37,6 +37,9 @@ Route::get('/item/{id}', 'ItemsController@getitem');
 Route::delete('/item/{id}', 'ItemsController@deleteitem');
 Route::post('/item/{id}/like', 'ItemsController@likeitem');
 
+// media
+Route::get('/addmedia', 'MediaController@index')->name('addmedia');
+
 // search
 Route::get('/search', 'SearchController@index')->name('search');
 Route::post('/search', 'SearchController@search');
