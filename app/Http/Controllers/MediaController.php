@@ -43,13 +43,13 @@ class MediaController extends Controller
 
         $session = $cluster->connect($keyspace);
 
-        $id = (new Cassandra\Uuid())->uuid();
+        $uuid = new Cassandra\Uuid();
 
         $session->execute(
             'INSERT INTO ' . config('cassandra.table') . ' (id, filename, contents, type, size, refcount) VALUES (?, ?, ?, ?, ?, 0)',
             [
                 'arguments' => [
-                    $id,
+                    $uuid,
                     $_FILES['content']['name'],
                     new Cassandra\Blob(file_get_contents($_FILES['content']['tmp_name'])),
                     $_FILES['content']['type'],
@@ -59,7 +59,7 @@ class MediaController extends Controller
 
         return response()->prettyjson([
             'status' => config('status.ok'),
-            'id' => $id,
+            'id' => $uuid->uuid(),
         ]);
     }
 
