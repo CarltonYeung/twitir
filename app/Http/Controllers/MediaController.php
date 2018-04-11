@@ -43,7 +43,7 @@ class MediaController extends Controller
 
         $session = $cluster->connect($keyspace);
 
-        $id = new Cassandra\Uuid()->uuid();
+        $id = (new Cassandra\Uuid())->uuid();
 
         $session->execute(
             'INSERT INTO ' . config('cassandra.table') . ' (id, filename, contents, type, size, refcount) VALUES (?, ?, ?, ?, ?, ?)',
