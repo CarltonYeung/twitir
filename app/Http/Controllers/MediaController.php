@@ -46,7 +46,7 @@ class MediaController extends Controller
         $id = (new Cassandra\Uuid())->uuid();
 
         $session->execute(
-            'INSERT INTO ' . config('cassandra.table') . ' (id, filename, contents, type, size, refcount) VALUES (?, ?, ?, ?, ?, ?)',
+            'INSERT INTO ' . config('cassandra.table') . ' (id, filename, contents, type, size, refcount) VALUES (?, ?, ?, ?, ?, 0)',
             [
                 'arguments' => [
                     $id,
@@ -54,7 +54,6 @@ class MediaController extends Controller
                     new Cassandra\Blob(file_get_contents($_FILES['content']['tmp_name'])),
                     $_FILES['content']['type'],
                     $_FILES['content']['size'],
-                    0,
             ],
         ]);
 
