@@ -72,7 +72,7 @@ class MediaController extends Controller
             'SELECT contents, type FROM twitir.media WHERE filename = ?',
             [
                 'arguments' => [
-                    $_GET['filename'],
+                    $id,
             ],
         ]);
 
