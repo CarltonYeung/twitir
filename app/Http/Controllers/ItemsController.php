@@ -96,7 +96,7 @@ class ItemsController extends Controller
             'retweeted' => 0,
             'content' => $data['content'],
             'childType' => array_key_exists('childType', $data) ? $data['childType'] : null,
-            'parent' => array_key_exists('parent', $data) ? $data['parent'] : null,
+            'parent' => array_key_exists('parent', $data) && array_key_exists('childType', $data) ? $data['parent'] : null,
             // 'media' => [],
             'timestamp' => time(),
         ]);
