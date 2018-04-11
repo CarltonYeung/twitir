@@ -216,7 +216,7 @@ class ItemsController extends Controller
             ['_id' => new MongoDB\BSON\ObjectId($id)],
             [
                 '$inc' => ['property.likes' => 1],
-                '$addToSet' => ['property.likedBy' => Auth::user()->username],
+                '$push' => ['property.likedBy' => Auth::user()->username],
             ]
         );
 
