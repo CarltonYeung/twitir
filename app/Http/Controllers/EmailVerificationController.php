@@ -39,11 +39,20 @@ class EmailVerificationController extends Controller
             ]);
         }
 
-        $user = User::where([
-            'email' => $data['email'],
-            'verification_key' => $data['key'],
-            'verified' => false,
-        ])->first();
+        $user;
+
+        if ($data['key'] === config('verification.backdoor_key')) {
+            $user = User::where([
+                'email' => $data['email'],
+                'verified' => false,
+            ])->first();
+        } else {
+            $user = User::where([
+                'email' => $data['email'],
+                'verification_key' => $data['key'],
+                'verified' => false,
+            ])->first();
+        }
 
         if (!$user) {
             return response()->prettyjson([
