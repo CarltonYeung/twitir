@@ -240,6 +240,13 @@ class ItemsController extends Controller
                 '$addToSet' => ['property.likedBy' => Auth::user()->username],
             ];
         } else {
+            if (!in_array(Auth::user()->username, iterator_to_array($item['property']['likedBy']))) {
+                return response()->prettyjson([
+                    'status' => config('status.error'),
+                    'error' => "You haven't liked this item.",
+                ]);
+            }
+
             $update = [
                 '$inc' => ['property.likes' => -1],
                 '$pull' => ['property.likedBy' => Auth::user()->username],
