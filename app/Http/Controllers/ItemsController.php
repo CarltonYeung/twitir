@@ -228,7 +228,7 @@ class ItemsController extends Controller
 
         $update;
         if (!array_key_exists('like', $data) || $data['like']) {
-            if (in_array(Auth::user()->username, $item['property']['likedBy'])) {
+            if (in_array(Auth::user()->username, iterator_to_array($item['property']['likedBy']))) {
                 return response()->prettyjson([
                     'status' => config('status.error'),
                     'error' => "You already liked this item.",
