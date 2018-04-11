@@ -223,7 +223,7 @@ class ItemsController extends Controller
             ];
         } else {
             $update = [
-                '$dec' => ['property.likes' => 1],
+                '$inc' => ['property.likes' => -1],
                 '$pull' => ['property.likedBy' => Auth::user()->username],
                 '$multiple' => false,
             ];
