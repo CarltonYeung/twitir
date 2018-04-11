@@ -37,22 +37,22 @@ class MediaController extends Controller
             ]);
         }
 
-        // $cluster = Cassandra::cluster()->build();
+        $cluster = Cassandra::cluster()->build();
 
-        // $keyspace = 'twitir';
+        $keyspace = 'twitir';
 
-        // $session = $cluster->connect($keyspace);
+        $session = $cluster->connect($keyspace);
 
-        // $session->execute(
-        //     'INSERT INTO media (filename, contents, type, size) VALUES (?, ?, ?, ?)',
-        //     [
-        //         'arguments' => [
-        //             $_FILES['content']['name'],
-        //             new Cassandra\Blob(file_get_contents($_FILES['content']['tmp_name'])),
-        //             $_FILES['content']['type'],
-        //             $_FILES['content']['size'],
-        //     ],
-        // ]);
+        $session->execute(
+            'INSERT INTO media (filename, contents, type, size) VALUES (?, ?, ?, ?)',
+            [
+                'arguments' => [
+                    $_FILES['content']['name'],
+                    new Cassandra\Blob(file_get_contents($_FILES['content']['tmp_name'])),
+                    $_FILES['content']['type'],
+                    $_FILES['content']['size'],
+            ],
+        ]);
 
         return response()->prettyjson([
             'status' => config('status.ok'),
