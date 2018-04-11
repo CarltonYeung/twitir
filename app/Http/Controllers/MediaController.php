@@ -53,6 +53,11 @@ class MediaController extends Controller
                     $_FILES['contents']['size'],
             ],
         ]);
+
+        return response()->prettyjson([
+            'status' => config('status.ok'),
+            'id' => $_FILES['contents']['name'],
+        ]);
     }
 
     public function getmedia($id)

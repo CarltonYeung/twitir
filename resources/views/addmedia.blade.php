@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<form id='addmedia' method='POST' action='/addmedia'>
+<form id='addmedia' method='POST' enctype='multipart/form-data'>
     @csrf
 
     <label for='contents'>media</label>
@@ -19,5 +19,24 @@
 
 @section('script')
 <script>
+    $('#addmedia').submit(function() {
+        $.ajax({
+            type: 'POST',
+            url: '/addmedia',
+            data: new FormData($('#addmedia')),
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function(data) {
+
+                console.log(JSON.stringify(data, null, 4));
+
+            },
+        });
+
+        // Prevent html form from being submitted and the page refreshing
+        return false;
+    });
 </script>
 @endsection
