@@ -19,8 +19,7 @@
 @section('script')
 <script>
     $('#addmedia').submit(function() {
-        var fd = new FormData();
-        fd.append('content');
+        var fd = new FormData($('#addmedia'));
 
         $.ajax({
             type: 'POST',
