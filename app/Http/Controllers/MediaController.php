@@ -75,7 +75,7 @@ class MediaController extends Controller
             'SELECT contents, type FROM ' . config('cassandra.keyspace') . '.' . config('cassandra.table') . ' WHERE id = ?',
             [
                 'arguments' => [
-                    $id,
+                    new Cassandra\Uuid($id),
             ],
         ]);
 
