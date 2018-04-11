@@ -187,12 +187,24 @@ class ItemsController extends Controller
         return response('', 200);
     }
 
-    public function likeitem($id)
+    public function likeitem(Request $request, $id)
     {
-        $validator = Validator::make(['id' => $id], [
+        if (!Auth::check()) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => config('status.unauthorized'),
+            ]);
+        }
+
+        $data = $request->json()->all();
+
+        $validator = Validator::make(['id' => $id, $data], [
             'id' => [
                 'required',
                 'regex:(^[0-9a-f]{24}$)',
+            ],
+            'like' => [
+                'boolean',
             ],
         ]);
 
@@ -203,22 +215,23 @@ class ItemsController extends Controller
             ]);
         }
 
-        if (!Auth::check()) {
-            return response()->prettyjson([
-                'status' => config('status.error'),
-                'error' => config('status.unauthorized'),
-            ]);
+        $update;
+        if (!array_key_exists('like', $data) || $data['like']) {
+            $update = [
+                '$inc' => ['property.likes' => 1],
+                '$push' => ['property.likedBy' => Auth::user()->username],
+            ];
+        } else {
+            $update = [
+                '$dec' => ['property.likes' => 1],
+                '$pull' => ['property.likedBy' => Auth::user()->username],
+                ['multi' => false],
+            ]
         }
 
         $collection = self::$client->twitir->items;
 
-        $result = $collection->updateOne(
-            ['_id' => new MongoDB\BSON\ObjectId($id)],
-            [
-                '$inc' => ['property.likes' => 1],
-                '$push' => ['property.likedBy' => Auth::user()->username],
-            ]
-        );
+        $result = $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($id)], $update);
 
         if (!$result->getMatchedCount() || !$result->getModifiedCount()) {
             return response()->prettyjson([
