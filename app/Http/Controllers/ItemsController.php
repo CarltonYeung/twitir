@@ -215,7 +215,7 @@ class ItemsController extends Controller
         $result = $collection->updateOne(
             ['_id' => new MongoDB\BSON\ObjectId($id)],
             [
-                '$inc' => ['propety.likes' => 1],
+                '$inc' => ['property.likes' => 1],
                 '$push' => ['property.likedBy' => Auth::user()->username],
             ]
         );
