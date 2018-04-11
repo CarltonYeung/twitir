@@ -77,7 +77,7 @@ class ItemsController extends Controller
         if (array_key_exists('parent', $data)) {
             $options = [];
             if (array_key_exists('childType', $data) && $data['childType'] === 'retweet') {
-                $options = ['$inc' => ['retweeted' => 1]]
+                $options = ['$inc' => ['retweeted' => 1]];
             }
 
             $parent_result = $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $options);
