@@ -20,7 +20,7 @@
 <script>
     $('#addmedia').submit(function() {
         var fd = new FormData();
-        fd.append('content', $('#content').files[0]);
+        fd.append('content');
 
         $.ajax({
             type: 'POST',
