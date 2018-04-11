@@ -225,7 +225,7 @@ class ItemsController extends Controller
             $update = [
                 '$dec' => ['property.likes' => 1],
                 '$pull' => ['property.likedBy' => Auth::user()->username],
-                ['multi' => false],
+                'multiple' => false,
             ];
         }
 
