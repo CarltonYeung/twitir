@@ -215,32 +215,38 @@ class ItemsController extends Controller
             ]);
         }
 
+        $collection = self::$client->twitir->items;
+        
+        $item = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
+
+        if (!$item) {
+            return response()->prettyjson([
+                'status' => config('status.error'),
+                'error' => "Item doesn't exist",
+            ]);
+        }
+
         $update;
-        $options = [];
         if (!array_key_exists('like', $data) || $data['like']) {
+            if (in_array(Auth::user()->username, $item->property->likedBy)) {
+                return response()->prettyjson([
+                    'status' => config('status.error'),
+                    'error' => "You already liked this item.",
+                ]);
+            }
+
             $update = [
                 '$inc' => ['property.likes' => 1],
-                '$push' => ['property.likedBy' => Auth::user()->username],
+                '$addToSet' => ['property.likedBy' => Auth::user()->username],
             ];
         } else {
             $update = [
                 '$inc' => ['property.likes' => -1],
                 '$pull' => ['property.likedBy' => Auth::user()->username],
             ];
-
-            $options = ['multiple' => false];
         }
 
-        $collection = self::$client->twitir->items;
-
-        $result = $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($id)], $update, $options);
-
-        if (!$result->getMatchedCount() || !$result->getModifiedCount()) {
-            return response()->prettyjson([
-                'status' => config('status.error'),
-                'error' => "Nah bro.",
-            ]);
-        }
+        $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($id)], $update);
 
         return response()->prettyjson(['status' => config('status.ok')]);
     }
