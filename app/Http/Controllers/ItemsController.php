@@ -233,7 +233,7 @@ class ItemsController extends Controller
         $media = $item['media'];
         foreach ($media as $id) {
             $rows = $session->execute(
-                'SELECT refcount FROM ' . config('cassandra.refcounts') . ' WHERE id = ?', [
+                'UPDATE ' . config('cassandra.refcounts') . ' SET refcount = refcount - 1 WHERE id = ?', [
                     'arguments' => [
                         new Cassandra\Uuid($id)
                     ]
