@@ -114,7 +114,7 @@ class ItemsController extends Controller
             $rows = $session->execute(
                 'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id IN (?)', [
                     'arguments' => [
-                        implode(', ', $uuids);
+                        implode(', ', $uuids)
                     ]
                 ]
             );
@@ -129,7 +129,7 @@ class ItemsController extends Controller
             $rows = $session->execute(
                 'UPDATE ' . config('cassandra.table') . ' SET refcount = refcount + 1 WHERE id in ?', [
                     'arguments' => [
-                        implode(', ', $uuids);
+                        implode(', ', $uuids)
                     ]
                 ]
             );
