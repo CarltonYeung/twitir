@@ -106,22 +106,33 @@ class ItemsController extends Controller
             $keyspace = config('cassandra.keyspace');
             $session = $cluster->connect($keyspace);
 
+            $uuids = [];
             foreach ($data['media'] as $id) {
-                $rows = $session->execute(
-                    'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id = ?', [
-                        'arguments' => [
-                            new Cassandra\Uuid($id)
-                        ]
-                    ]
-                );
-
-                if (!$rows[0]['count']->value()) {
-                    return response()->prettyjson([
-                        'status' => config('status.error'),
-                        'error' => 'Media doesn\'t exist: ' . $id,
-                    ]);
-                }
+                array_push($uuids, new Cassandra\Uuid($id));
             }
+
+            $rows = $session->execute(
+                'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id in ?', [
+                    'arguments' => [
+                        $uuids
+                    ]
+                ]
+            );
+
+            if ($rows[0]['count']->value() !== count($uuids)) {
+                return response()->prettyjson([
+                    'status' => config('status.error'),
+                    'error' => 'Some media doesn\'t exist.',
+                ]);
+            }
+
+            $rows = $session->execute(
+                'UPDATE ' . config('cassandra.table') . ' SET refcount = refcount + 1 WHERE id in ?', [
+                    'arguments' => [
+                        $uuids
+                    ]
+                ]
+            );
         }
 
         $item = $collection->insertOne([
