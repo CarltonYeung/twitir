@@ -3,6 +3,7 @@
 return [
 
 	'keyspace' => 'twitir',
-	'table' => 'media',
+	'media' => 'media',
+	'refcounts' => 'refcounts'
 
 ];
