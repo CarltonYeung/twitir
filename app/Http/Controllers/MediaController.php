@@ -55,7 +55,7 @@ class MediaController extends Controller
         );
 
         $session->execute(
-            'INSERT INTO ' . config('cassandra.refcounts') . ' (id, refcount) VALUES (?, 0)', [
+            'UPDATE ' . config('cassandra.refcounts') . ' SET refcount = 0 WHERE id = ?', [
                 'arguments' => [
                     $uuid
                 ],
