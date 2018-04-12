@@ -233,16 +233,38 @@ class ItemsController extends Controller
         $media = $item['media'];
         foreach ($media as $id) {
             $rows = $session->execute(
-                'UPDATE ' . config('cassandra.refcounts') . ' SET refcount = refcount - 1 WHERE id = ?', [
+                'SELECT refcount FROM ' . config('cassandra.refcounts') . ' WHERE id = ?', [
                     'arguments' => [
                         new Cassandra\Uuid($id)
                     ]
                 ]
             );
 
-            return response()->prettyjson([
-                'refcount' => $rows[0]['refcount']->value()
-            ]);
+            if ($rows[0]['refcount']->value() === 1) {
+                $session->execute(
+                    'DELETE FROM ' . config('cassandra.refcounts') . ' WHERE id = ?', [
+                        'arguments' => [
+                            new Cassandra\Uuid($id)
+                        ]
+                    ]
+                );
+
+                $session->execute(
+                    'DELETE FROM ' . config('cassandra.media') . ' WHERE id = ?', [
+                        'arguments' => [
+                            new Cassandra\Uuid($id)
+                        ]
+                    ]
+                );
+            } else {
+                $session->execute(
+                    'UPDATE ' . config('cassandra.refcounts') . ' SET refcount = refcount - 1 WHERE id = ?', [
+                        'arguments' => [
+                            new Cassandra\Uuid($id)
+                        ]
+                    ]
+                );
+            }
         }
 
         return response('', 200);
