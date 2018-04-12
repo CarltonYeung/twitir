@@ -75,7 +75,7 @@ class MediaController extends Controller
         $session = $cluster->connect($keyspace);
 
         $rows = $session->execute(
-            'SELECT contents, type FROM ' . config('cassandra.keyspace') . '.' . config('cassandra.table') . ' WHERE id = ?', [
+            'SELECT contents, type FROM ' . config('cassandra.keyspace') . '.' . config('cassandra.media') . ' WHERE id = ?', [
                 'arguments' => [
                     new Cassandra\Uuid($id),
                 ],
