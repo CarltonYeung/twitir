@@ -38,24 +38,21 @@ class MediaController extends Controller
         }
 
         $cluster = Cassandra::cluster()->build();
-
         $keyspace = config('cassandra.keyspace');
-
         $session = $cluster->connect($keyspace);
-
         $uuid = new Cassandra\Uuid();
 
         $session->execute(
-            'INSERT INTO ' . config('cassandra.table') . ' (id, filename, contents, type, size, refcount) VALUES (?, ?, ?, ?, ?, 0)',
-            [
+            'INSERT INTO ' . config('cassandra.table') . ' (id, filename, contents, type, size, refcount) VALUES (?, ?, ?, ?, ?, 0)', [
                 'arguments' => [
                     $uuid,
                     $_FILES['content']['name'],
                     new Cassandra\Blob(file_get_contents($_FILES['content']['tmp_name'])),
                     $_FILES['content']['type'],
                     $_FILES['content']['size'],
-            ],
-        ]);
+                ],
+            ]
+        );
 
         return response()->prettyjson([
             'status' => config('status.ok'),
@@ -66,18 +63,16 @@ class MediaController extends Controller
     public function getmedia($id)
     {
         $cluster = Cassandra::cluster()->build();
-
         $keyspace = config('cassandra.keyspace');
-
         $session = $cluster->connect($keyspace);
 
         $rows = $session->execute(
-            'SELECT contents, type FROM ' . config('cassandra.keyspace') . '.' . config('cassandra.table') . ' WHERE id = ?',
-            [
+            'SELECT contents, type FROM ' . config('cassandra.keyspace') . '.' . config('cassandra.table') . ' WHERE id = ?', [
                 'arguments' => [
                     new Cassandra\Uuid($id),
-            ],
-        ]);
+                ],
+            ]
+        );
 
         foreach ($rows as $row) {
             header('Content-Type: '.$row['type']);

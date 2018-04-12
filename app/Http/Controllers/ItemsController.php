@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use Cassandra;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use MongoDB;
@@ -63,6 +64,9 @@ class ItemsController extends Controller
                 'required_with:childType', // if childType is present and not empty (i.e., not null)
                 'regex:(^[0-9a-f]{24}$)',
             ],
+            'media' => [
+                'filled',
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -93,6 +97,29 @@ class ItemsController extends Controller
             }
         }
 
+        if (array_key_exists('media', $data)) {
+            $cluster = Cassandra::cluster()->build();
+            $keyspace = config('cassandra.keyspace');
+            $session = $cluster->connect($keyspace);
+
+            foreach ($data['media'] as $id) {
+                $media_exists = $session->execute(
+                    'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE primary_keys = ?', [
+                        'arguments' => [
+                            new Cassandra\Uuid($id)
+                        ]
+                    ]
+                );
+
+                if (!$media_exists) {
+                    return response()->prettyjson([
+                        'status' => config('status.error'),
+                        'error' => 'Media doesn\'t exist: ' . $id,
+                    ]);
+                }
+            }
+        }
+
         $item = $collection->insertOne([
             'username' => Auth::user()->username,
             'property' => [
@@ -103,7 +130,7 @@ class ItemsController extends Controller
             'content' => $data['content'],
             'childType' => $parent_and_child ? $data['childType'] : null,
             'parent' => $parent_and_child ? $data['parent'] : null,
-            // 'media' => [],
+            'media' => array_key_exists('media', $data) ? $data['media'] : [],
             'timestamp' => time(),
         ]);
 
