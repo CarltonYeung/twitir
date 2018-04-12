@@ -111,6 +111,10 @@ class ItemsController extends Controller
                 array_push($uuids, new Cassandra\Uuid($id));
             }
 
+            return response()->prettyjson([
+                'count' => count($uuids)
+            ]);
+
             $rows = $session->execute(
                 'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id in ?', [
                     'arguments' => [
