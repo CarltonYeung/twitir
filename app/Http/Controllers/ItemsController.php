@@ -107,13 +107,17 @@ class ItemsController extends Controller
             $session = $cluster->connect($keyspace);
 
             foreach ($data['media'] as $id) {
-                $media_exists = $session->execute(
+                $rows = $session->execute(
                     'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id = ?', [
                         'arguments' => [
                             new Cassandra\Uuid($id)
                         ]
                     ]
                 );
+
+                return response()->prettyjson([
+                    'rows' => $rows,
+                ]);
 
                 if (!$media_exists) {
                     return response()->prettyjson([
