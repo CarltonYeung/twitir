@@ -119,6 +119,10 @@ class ItemsController extends Controller
                 ]
             );
 
+            return response()->prettyjson([
+                'row' => $rows[0]
+            ]);
+
             if ($rows[0]['count']->value() !== count($data['media'])) {
                 return response()->prettyjson([
                     'status' => config('status.error'),
