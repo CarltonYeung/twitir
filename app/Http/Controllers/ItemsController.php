@@ -232,8 +232,8 @@ class ItemsController extends Controller
         $item = iterator_to_array($item);
         $media = $item['media'];
         foreach ($media as $id) {
-            $delete = $session->execute(
-                'DELETE FROM ' . config('cassandra.refcounts') . ' WHERE id = ? IF refcount = 0', [
+            $refcount = $session->execute(
+                'SELECT refcount FROM ' . config('cassandra.refcounts') . ' WHERE id = ?', [
                     'arguments' => [
                         new Cassandra\Uuid($id)
                     ]
@@ -241,7 +241,7 @@ class ItemsController extends Controller
             );
 
             return response()->prettyjson([
-                'delete' => $delete
+                'refcount' => $refcount[0]
             ]);
         }
 
