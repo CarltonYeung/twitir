@@ -115,11 +115,7 @@ class ItemsController extends Controller
                     ]
                 );
 
-                return response()->prettyjson([
-                    'rows' => $rows[0],
-                ]);
-
-                if (!$media_exists) {
+                if (!$rows[0]['count']['value']) {
                     return response()->prettyjson([
                         'status' => config('status.error'),
                         'error' => 'Media doesn\'t exist: ' . $id,
