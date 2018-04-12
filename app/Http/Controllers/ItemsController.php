@@ -116,7 +116,7 @@ class ItemsController extends Controller
                 );
 
                 return response()->prettyjson([
-                    'rows' => $rows,
+                    'rows' => $rows[0],
                 ]);
 
                 if (!$media_exists) {
