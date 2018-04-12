@@ -241,9 +241,6 @@ class ItemsController extends Controller
             );
 
             if ($rows[0]['refcount']->value() == 1) {
-                return response()->prettyjson([
-                    'refcount' => 'should delete'
-                ]);
                 $session->execute(
                     'DELETE FROM ' . config('cassandra.refcounts') . ' WHERE id = ?', [
                         'arguments' => [
