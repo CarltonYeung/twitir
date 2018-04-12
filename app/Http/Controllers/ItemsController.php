@@ -241,7 +241,7 @@ class ItemsController extends Controller
             );
 
             return response()->prettyjson([
-                'refcount' => $refcount[0]
+                'refcount' => $refcount[0]->value()
             ]);
         }
 
