@@ -106,10 +106,15 @@ class ItemsController extends Controller
             $keyspace = config('cassandra.keyspace');
             $session = $cluster->connect($keyspace);
 
+            $uuids = [];
+            foreach ($data['media'] as $id) {
+                array_push($uuids, new Cassandra\Uuid($id));
+            }
+
             $rows = $session->execute(
                 'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id in (?)', [
                     'arguments' => [
-                        implode(', ', $data['media'])
+                        $uuids
                     ]
                 ]
             );
