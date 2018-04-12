@@ -111,14 +111,10 @@ class ItemsController extends Controller
                 array_push($uuids, new Cassandra\Uuid($id));
             }
 
-            return response()->prettyjson([
-                'count' => count($uuids)
-            ]);
-
             $rows = $session->execute(
-                'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id in ?', [
+                'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id IN (?)', [
                     'arguments' => [
-                        $uuids
+                        implode(', ', $uuids);
                     ]
                 ]
             );
@@ -133,7 +129,7 @@ class ItemsController extends Controller
             $rows = $session->execute(
                 'UPDATE ' . config('cassandra.table') . ' SET refcount = refcount + 1 WHERE id in ?', [
                     'arguments' => [
-                        $uuids
+                        implode(', ', $uuids);
                     ]
                 ]
             );
