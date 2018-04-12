@@ -225,12 +225,25 @@ class ItemsController extends Controller
             return response('', 400);
         }
 
+        $cluster = Cassandra::cluster()->build();
+        $keyspace = config('cassandra.keyspace');
+        $session = $cluster->connect($keyspace);
+
         $item = iterator_to_array($item);
         $media = $item['media'];
+        foreach ($media as $id) {
+            $delete = $session->execute(
+                'DELETE FROM ' . config('cassandra.refcounts') . ' WHERE id = ? IF refcount = 0', [
+                    'arguments' => [
+                        new Cassandra\Uuid($id)
+                    ]
+                ]
+            );
 
-        return response()->prettyjson([
-            'media' => $media
-        ]);
+            return response()->prettyjson([
+                'delete' => $delete
+            ]);
+        }
 
         return response('', 200);
     }
