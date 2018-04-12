@@ -106,32 +106,47 @@ class ItemsController extends Controller
             $keyspace = config('cassandra.keyspace');
             $session = $cluster->connect($keyspace);
 
-            foreach ($data['media'] as $id) {
-                $rows = $session->execute(
-                    'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id = ?', [
-                        'arguments' => [
-                            new Cassandra\Uuid($id)
-                        ]
+            $rows = $session->execute(
+                'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id in (?)', [
+                    'arguments' => [
+                        implode(', ', $data['media'])
                     ]
-                );
+                ]
+            );
 
-                if (!$rows[0]['count']->value()) {
-                    return response()->prettyjson([
-                        'status' => config('status.error'),
-                        'error' => 'Media doesn\'t exist: ' . $id,
-                    ]);
-                }
+            if ($rows[0]['count']->value() !== count($data['media'])) {
+                return response()->prettyjson([
+                    'status' => config('status.error'),
+                    'error' => 'Some media doesn\'t exist',
+                ]);
             }
 
-            foreach ($data['media'] as $id) {
-                $rows = $session->execute(
-                    'UPDATE ' . config('cassandra.table') . ' SET refcount = refcount + 1 WHERE id = ?', [
-                        'arguments' => [
-                            new Cassandra\Uuid($id)
-                        ]
-                    ]
-                );
-            }
+            // foreach ($data['media'] as $id) {
+            //     $rows = $session->execute(
+            //         'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id = ?', [
+            //             'arguments' => [
+            //                 new Cassandra\Uuid($id)
+            //             ]
+            //         ]
+            //     );
+
+            //     if (!$rows[0]['count']->value()) {
+            //         return response()->prettyjson([
+            //             'status' => config('status.error'),
+            //             'error' => 'Media doesn\'t exist: ' . $id,
+            //         ]);
+            //     }
+            // }
+
+            // foreach ($data['media'] as $id) {
+            //     $rows = $session->execute(
+            //         'UPDATE ' . config('cassandra.table') . ' SET refcount = refcount + 1 WHERE id = ?', [
+            //             'arguments' => [
+            //                 new Cassandra\Uuid($id)
+            //             ]
+            //         ]
+            //     );
+            // }
         }
 
         $item = $collection->insertOne([
