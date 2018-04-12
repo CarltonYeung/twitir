@@ -232,7 +232,7 @@ class ItemsController extends Controller
         $item = iterator_to_array($item);
         $media = $item['media'];
         foreach ($media as $id) {
-            $refcount = $session->execute(
+            $rows = $session->execute(
                 'SELECT refcount FROM ' . config('cassandra.refcounts') . ' WHERE id = ?', [
                     'arguments' => [
                         new Cassandra\Uuid($id)
@@ -241,7 +241,7 @@ class ItemsController extends Controller
             );
 
             return response()->prettyjson([
-                'refcount' => $refcount[0]->value()
+                'refcount' => $rows[0]['refcount']->value()
             ]);
         }
 
