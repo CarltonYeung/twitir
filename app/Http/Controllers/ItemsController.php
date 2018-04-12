@@ -225,6 +225,13 @@ class ItemsController extends Controller
             return response('', 400);
         }
 
+        $item = iterator_to_array($item);
+        $media = $item['media'];
+
+        return response()->prettyjson([
+            'media' => $media
+        ]);
+
         return response('', 200);
     }
 
