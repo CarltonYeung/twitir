@@ -107,7 +107,7 @@ class ItemsController extends Controller
 
             foreach ($data['media'] as $id) {
                 $media_exists = $session->execute(
-                    'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE primary_keys = ?', [
+                    'SELECT COUNT(*) FROM ' . config('cassandra.table') . ' WHERE id = ?', [
                         'arguments' => [
                             new Cassandra\Uuid($id)
                         ]
