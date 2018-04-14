@@ -13,10 +13,12 @@ use Validator;
 class MediaController extends Controller
 {
     private static $client = null;
+    private static $cluster = null;
 
     public function __construct()
     {
         self::$client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        self::$cluster = Cassandra::cluster()->build();
     }
 
     public function index(Request $request)
@@ -37,9 +39,8 @@ class MediaController extends Controller
             ]);
         }
 
-        $cluster = Cassandra::cluster()->build();
         $keyspace = config('cassandra.keyspace');
-        $session = $cluster->connect($keyspace);
+        $session = self::$cluster->connect($keyspace);
         $uuid = new Cassandra\Uuid();
 
         $session->execute(
@@ -70,9 +71,8 @@ class MediaController extends Controller
 
     public function getmedia($id)
     {
-        $cluster = Cassandra::cluster()->build();
         $keyspace = config('cassandra.keyspace');
-        $session = $cluster->connect($keyspace);
+        $session = self::$cluster->connect($keyspace);
 
         $rows = $session->execute(
             'SELECT contents, type FROM ' . config('cassandra.keyspace') . '.' . config('cassandra.media') . ' WHERE id = ?', [

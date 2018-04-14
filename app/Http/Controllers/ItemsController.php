@@ -13,10 +13,12 @@ use Validator;
 class ItemsController extends Controller
 {
     private static $client = null;
+    private static $cluster = null;
 
     public function __construct()
     {
         self::$client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
+        self::$cluster = Cassandra::cluster()->build();
     }
 
     /**
@@ -102,9 +104,8 @@ class ItemsController extends Controller
         }
 
         if (array_key_exists('media', $data)) {
-            $cluster = Cassandra::cluster()->build();
             $keyspace = config('cassandra.keyspace');
-            $session = $cluster->connect($keyspace);
+            $session = self::$cluster->connect($keyspace);
 
             foreach ($data['media'] as $id) {
                 $rows = $session->execute(
@@ -225,9 +226,8 @@ class ItemsController extends Controller
             return response('', 400);
         }
 
-        $cluster = Cassandra::cluster()->build();
         $keyspace = config('cassandra.keyspace');
-        $session = $cluster->connect($keyspace);
+        $session = self::$cluster->connect($keyspace);
 
         $item = iterator_to_array($item);
         $media = $item['media'];
