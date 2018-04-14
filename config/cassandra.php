@@ -5,6 +5,7 @@ return [
 	'keyspace' => 'twitir',
 	'media' => 'media',
 	'refcounts' => 'refcounts',
-	'host' => '127.0.0.1',
+	'host' => '130.245.168.216',
+	'port' => 9042,
 
 ];

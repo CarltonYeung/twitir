@@ -20,6 +20,7 @@ class MediaController extends Controller
         self::$client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
         self::$cluster = Cassandra::cluster()
                          ->withContactPoints(config('cassandra.host'))
+                         ->withPort(config('cassandra.port'))
                          ->build();
     }
 
