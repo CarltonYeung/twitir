@@ -18,7 +18,9 @@ class ItemsController extends Controller
     public function __construct()
     {
         self::$client = new MongoDB\Client('mongodb://'.config('database.mongodb.host').':'.config('database.mongodb.port'));
-        self::$cluster = Cassandra::cluster()->build();
+        self::$cluster = Cassandra::cluster()
+                         ->withContactPoints(config('cassandra.host'))
+                         ->build();
     }
 
     /**

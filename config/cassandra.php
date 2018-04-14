@@ -4,6 +4,7 @@ return [
 
 	'keyspace' => 'twitir',
 	'media' => 'media',
-	'refcounts' => 'refcounts'
+	'refcounts' => 'refcounts',
+	'host' => '127.0.0.1',
 
 ];
