@@ -92,13 +92,14 @@ class ItemsController extends Controller
                          && $data['parent']
                          && $data['childType'];
 
+        $parent_result = null;
         if ($parent_and_child) {
             $inc = $data['childType'] === 'retweet' ? 1 : 0;
             $update = ['$inc' => ['retweeted' => $inc]];
 
-            $parent_result = $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $update);
+            $parent_result = $collection->findOneAndUpdate(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $update);
 
-            if(!$parent_result->getMatchedCount()) {
+            if(!$parent_result) {
                 return response()->prettyjson([
                     'status' => config('status.error'),
                     'error' => 'Parent doesn\'t exist',
@@ -145,7 +146,7 @@ class ItemsController extends Controller
                 'likedBy' => [],
             ],
             'retweeted' => 0,
-            'content' => $data['content'],
+            'content' => $parent_result ? $parent_result['content'] : $data['content'],
             'childType' => $parent_and_child ? $data['childType'] : null,
             'parent' => $parent_and_child ? $data['parent'] : null,
             'media' => array_key_exists('media', $data) ? $data['media'] : [],
