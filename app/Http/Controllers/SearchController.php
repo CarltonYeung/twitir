@@ -104,7 +104,7 @@ class SearchController extends Controller
 
         if (array_key_exists('replies', $data)) {
             if (!$data['replies']) {
-                $query['childType'] = ['$not' => ['reply']];
+                $query['childType'] = ['$not' => ['/reply/']];
             }
         }
 
