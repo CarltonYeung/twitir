@@ -39,6 +39,7 @@ class SearchController extends Controller
             'q' => 'filled|string',
             'username' => 'filled|string',
             'following' => 'filled|boolean',
+            'parent' => 'filled|regex:(^[0-9a-f]{24}$)',
         ]);
 
         if ($validator->fails()) {
@@ -93,6 +94,11 @@ class SearchController extends Controller
             } else {
                 $query['username'] = ['$regex' => implode('|', $following)];
             }
+        }
+
+        if (array_key_exists('parent', $data)) {
+            $query['parent'] = $data['parent'];
+            $query['childType'] = 'reply';
         }
 
         $collection = self::$client->twitir->items;
