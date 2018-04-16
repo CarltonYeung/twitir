@@ -94,16 +94,15 @@ class ItemsController extends Controller
 
         $parent_result = null;
         if ($parent_and_child) {
-            $inc = $data['childType'] === 'retweet' ? 1 : 0;
-            $update = ['$inc' => ['retweeted' => $inc]];
-
-            $parent_result = $collection->findOneAndUpdate(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $update);
-
-            if(!$parent_result) {
-                return response()->prettyjson([
-                    'status' => config('status.error'),
-                    'error' => 'Parent doesn\'t exist',
-                ]);
+            if ($data['childType'] == 'retweet') {
+                $update = ['$inc' => ['retweeted' => 1]];
+                $parent_result = $collection->findOneAndUpdate(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $update);
+                if(!$parent_result) {
+                    return response()->prettyjson([
+                        'status' => config('status.error'),
+                        'error' => 'Parent doesn\'t exist',
+                    ]);
+                }
             }
         }
 
