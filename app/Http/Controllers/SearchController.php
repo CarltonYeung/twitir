@@ -41,6 +41,7 @@ class SearchController extends Controller
             'following' => 'filled|boolean',
             'parent' => 'filled|regex:(^[0-9a-f]{24}$)',
             'replies' => 'filled|boolean',
+            'media' => 'filled|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -105,6 +106,12 @@ class SearchController extends Controller
         if (array_key_exists('replies', $data)) {
             if (!$data['replies']) {
                 $query['childType'] = ['$ne' => 'reply'];
+            }
+        }
+
+        if (array_key_exists('media', $data)) {
+            if ($data['media']) {
+                $query['media.0'] = ['$exists' => true];
             }
         }
 
