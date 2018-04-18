@@ -42,6 +42,7 @@ class SearchController extends Controller
             'parent' => 'filled|regex:(^[0-9a-f]{24}$)',
             'replies' => 'filled|boolean',
             'media' => 'filled|boolean',
+            'rank' => 'filled|regex:(^(time|interest)$)',
         ]);
 
         if ($validator->fails()) {
@@ -115,13 +116,24 @@ class SearchController extends Controller
             }
         }
 
+        $sort = [
+            'timestamp' => -1,
+            'property.likes' => -1,
+            'retweets' => -1,
+        ];
+        if (array_key_exists('rank', $data) && $data['rank'] === 'interest') {
+            $sort = [
+                'property.likes' => -1,
+                'retweets' => -1,
+                'timestamp' => -1,
+            ];
+        }
+
         $collection = self::$client->twitir->items;
 
         $cursor = $collection->find($query, [
             'limit' => $limit,
-            'sort' => [
-                'timestamp' => -1 // get the most recent tweets
-            ],
+            'sort' => $sort,
         ]);
 
         $items = $cursor->toArray();
