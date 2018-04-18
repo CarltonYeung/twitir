@@ -122,7 +122,7 @@ class SearchController extends Controller
         ];
         if (array_key_exists('rank', $data) && $data['rank'] === 'time') {
             $sort = [
-                'timestamp' => -1
+                'timestamp' => -1,
                 'interest' => -1,
             ];
         }
