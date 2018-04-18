@@ -118,14 +118,12 @@ class SearchController extends Controller
 
         $sort = [
             'timestamp' => -1,
-            'property.likes' => -1,
-            'retweets' => -1,
+            'interest' => -1
         ];
         if (array_key_exists('rank', $data) && $data['rank'] === 'interest') {
             $sort = [
-                'property.likes' => -1,
-                'retweets' => -1,
-                'timestamp' => -1,
+                'interest' => -1,
+                'timestamp' => -1
             ];
         }
 

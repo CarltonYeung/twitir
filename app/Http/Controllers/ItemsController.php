@@ -95,7 +95,10 @@ class ItemsController extends Controller
         $parent_result = null;
         if ($parent_and_child) {
             if ($data['childType'] == 'retweet') {
-                $update = ['$inc' => ['retweeted' => 1]];
+                $update = [
+                    '$inc' => ['retweeted' => 1],
+                    '$inc' => ['interest' => 1]
+                ];
                 $parent_result = $collection->findOneAndUpdate(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $update);
                 if(!$parent_result) {
                     return response()->prettyjson([
@@ -150,6 +153,7 @@ class ItemsController extends Controller
             'parent' => $parent_and_child ? $data['parent'] : null,
             'media' => array_key_exists('media', $data) ? $data['media'] : [],
             'timestamp' => time(),
+            'interest' => 0
         ]);
 
         return response()->prettyjson([
@@ -227,6 +231,14 @@ class ItemsController extends Controller
 
         if (!$item) {
             return response('', 400);
+        }
+
+        if ($item['childType'] === 'retweet') {
+            $update = [
+                '$inc' => ['retweeted' => -1],
+                '$inc' => ['interest' => -1]
+            ];
+            $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($item['parent'])], $update);
         }
 
         $keyspace = config('cassandra.keyspace');
@@ -324,6 +336,7 @@ class ItemsController extends Controller
             $update = [
                 '$inc' => ['property.likes' => 1],
                 '$addToSet' => ['property.likedBy' => Auth::user()->username],
+                '$inc' => ['interest' => 1]
             ];
         } else {
             if (!in_array(Auth::user()->username, iterator_to_array($item['property']['likedBy']))) {
@@ -336,6 +349,7 @@ class ItemsController extends Controller
             $update = [
                 '$inc' => ['property.likes' => -1],
                 '$pull' => ['property.likedBy' => Auth::user()->username],
+                '$inc' => ['interest' => -1]
             ];
         }
 
