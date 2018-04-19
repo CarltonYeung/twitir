@@ -53,7 +53,7 @@ class MediaController extends Controller
                     $_FILES['content']['name'],
                     new Cassandra\Blob(file_get_contents($_FILES['content']['tmp_name'])),
                     $_FILES['content']['type'],
-                    0, // size doesn't matter
+                    $_FILES['content']['size'],
                 ],
             ]
         );
