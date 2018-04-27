@@ -42,7 +42,7 @@ class SearchController extends Controller
             'parent' => 'filled|regex:(^[0-9a-f]{24}$)',
             'replies' => 'filled|boolean',
             'media' => 'filled|boolean',
-            'rank' => 'filled|regex:(^(time|interest)$)',
+            'rank' => ['filled', 'in' => ['time', 'interest']],
         ]);
 
         if ($validator->fails()) {
