@@ -68,13 +68,13 @@ class SearchController extends Controller
                 'filled',
                 'boolean',
             ],
-            'rank' => [
-                'filled', 
-                'in' => [
-                    'time', 
-                    'interest',
-                ],
-            ],
+            // 'rank' => [
+            //     'filled', 
+            //     'in' => [
+            //         'time', 
+            //         'interest',
+            //     ],
+            // ],
         ]);
 
         if ($validator->fails()) {
