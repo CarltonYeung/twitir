@@ -96,8 +96,7 @@ class ItemsController extends Controller
         if ($parent_and_child) {
             if ($data['childType'] == 'retweet') {
                 $update = [
-                    '$inc' => ['retweeted' => 1],
-                    '$inc' => ['interest' => 1]
+                    '$inc' => ['retweeted' => 1, 'interest' => 1],
                 ];
                 $parent_result = $collection->findOneAndUpdate(['_id' => new MongoDB\BSON\ObjectId($data['parent'])], $update);
                 if(!$parent_result) {
@@ -235,8 +234,7 @@ class ItemsController extends Controller
 
         if ($item['childType'] === 'retweet') {
             $update = [
-                '$inc' => ['retweeted' => -1],
-                '$inc' => ['interest' => -1]
+                '$inc' => ['retweeted' => -1, 'interest' => -1],
             ];
             $collection->updateOne(['_id' => new MongoDB\BSON\ObjectId($item['parent'])], $update);
         }
@@ -334,9 +332,8 @@ class ItemsController extends Controller
             }
 
             $update = [
-                '$inc' => ['property.likes' => 1],
                 '$addToSet' => ['property.likedBy' => Auth::user()->username],
-                '$inc' => ['interest' => 1]
+                '$inc' => ['property.likes' => 1, 'interest' => 1]
             ];
         } else {
             if (!in_array(Auth::user()->username, iterator_to_array($item['property']['likedBy']))) {
@@ -347,9 +344,8 @@ class ItemsController extends Controller
             }
 
             $update = [
-                '$inc' => ['property.likes' => -1],
                 '$pull' => ['property.likedBy' => Auth::user()->username],
-                '$inc' => ['interest' => -1]
+                '$inc' => ['property.likes' => -1, 'interest' => -1]
             ];
         }
 
