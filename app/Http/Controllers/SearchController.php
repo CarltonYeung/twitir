@@ -34,15 +34,47 @@ class SearchController extends Controller
         $data = $request->json()->all();
 
         $validator = Validator::make($data, [
-            'timestamp' => 'filled|integer', // integer strings are allowed
-            'limit' => 'filled|integer|min:1|max:100',
-            'q' => 'filled|string',
-            'username' => 'filled|string',
-            'following' => 'filled|boolean',
-            'parent' => 'filled|regex:(^[0-9a-f]{24}$)',
-            'replies' => 'filled|boolean',
-            'media' => 'filled|boolean',
-            'rank' => ['filled', 'in' => ['time', 'interest']],
+            'timestamp' => [
+                'filled',
+                'integer', // integer strings are allowed
+            ],
+            'limit' => [
+                'filled',
+                'integer',
+                'min:1',
+                'max:100',
+            ],
+            'q' => [
+                'filled',
+                'string',
+            ],
+            'username' => [
+                'filled',
+                'string',
+            ],
+            'following' => [
+                'filled',
+                'boolean',
+            ],
+            'parent' => [
+                'filled',
+                'regex:(^[0-9a-f]{24}$)',
+            ],
+            'replies' => [
+                'filled',
+                'boolean',
+            ],
+            'media' => [
+                'filled',
+                'boolean',
+            ],
+            'rank' => [
+                'filled', 
+                'in' => [
+                    'time', 
+                    'interest',
+                ],
+            ],
         ]);
 
         if ($validator->fails()) {
