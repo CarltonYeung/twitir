@@ -11,8 +11,8 @@ mailtrap.io
 MAIL_DRIVER=smtp
 MAIL_HOST=smtp.mailtrap.io
 MAIL_PORT=2525
-MAIL_USERNAME=92adebf83e17bf
-MAIL_PASSWORD=2eb94f91a24984
+MAIL_USERNAME=REDACTED
+MAIL_PASSWORD=REDACTED
 MAIL_ENCRYPTION=null
 
 
@@ -35,13 +35,13 @@ nginx.conf
 load-balancer.conf
 upstream twitir {
     ip_hash;
-    server 18.188.38.202:80;
-    server 18.188.45.176:80;
+    server REDACTED;
+    server REDACTED;
 }
 
 server {
     listen 80;
-    server_name cayeung.cse356.compas.cs.stonybrook.edu;
+    server_name REDACTED;
     location ~ {
         proxy_pass http://twitir;
         proxy_next_upstream error timeout http_500;
